@@ -17,7 +17,12 @@ public class MiEjecucion extends Thread {
 class TesteoHilos {
     public static void main(String[] args) {
         Thread miHilo = new MiEjecucion();
+        try {
+            miHilo.start();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         System.out.println("En el main");
-        miHilo.start();
+
     }
 }
