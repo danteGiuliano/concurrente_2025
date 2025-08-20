@@ -19,6 +19,7 @@ class TesteoHilos {
         Thread miHilo = new MiEjecucion();
         try {
             miHilo.start();
+            miHilo.join();
         } catch (Exception e) {
             // TODO: handle exception
         }
