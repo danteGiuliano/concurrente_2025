@@ -1,17 +1,21 @@
 package parque;
 
+import java.math.BigInteger;
 
 public class Visitante implements Runnable {
-    private final int id;
+    private BigInteger ID ;
     private final Parque parque;
 
-    public Visitante(int id, Parque parque) {
-        this.id = id;
+    public Visitante(Parque parque) {
         this.parque = parque;
     }
 
-    public int getIdVisitante() {
-        return id;
+    public BigInteger getIdVisitante() {
+        return this.ID;
+    }
+
+    public void setPase(BigInteger pase ) {
+        this.ID = pase;
     }
 
     @Override
