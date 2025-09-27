@@ -35,6 +35,9 @@ public class Parque {
         } 
     }
 
+
+    // ESTO SIMULARIA la aleatoriedad  
+
     private void enviarADestino(Visitante v) {
         int opcion = rnd.nextInt(4); 
         switch (opcion) {
