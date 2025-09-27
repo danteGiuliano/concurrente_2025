@@ -4,14 +4,26 @@
   <meta charset="UTF-8">
   <title>Log de Simulación</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-    table { border-collapse: collapse; width: 100%; background: white; }
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; background: white; margin-top: 20px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     th { background: #333; color: white; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    input, select { padding: 5px; font-size: 16px; margin-top: 10px; }
   </style>
 </head>
 <body>
   <h1>Log de Simulación</h1>
+  <label for="fileInput">Seleccioná tu archivo log:</label>
+  <input type="file" id="fileInput" accept=".log,.txt">
+
+  <br>
+
+  <label for="threadFilter">Filtrar por Thread:</label>
+  <select id="threadFilter">
+    <option value="all">Todos</option>
+  </select>
+
   <table id="logTable">
     <thead>
       <tr>
@@ -24,18 +36,60 @@
   </table>
 
   <script>
-    fetch("simulacion.log")
-      .then(response => response.text())
-      .then(data => {
-        const rows = data.trim().split("\n");
-        const tbody = document.querySelector("#logTable tbody");
-        rows.forEach(row => {
-          const [thread, action, time] = row.split(",");
-          const tr = document.createElement("tr");
-          tr.innerHTML = `<td>${thread}</td><td>${action}</td><td>${time}</td>`;
-          tbody.appendChild(tr);
+    const fileInput = document.getElementById("fileInput");
+    const threadFilter = document.getElementById("threadFilter");
+    const tbody = document.querySelector("#logTable tbody");
+    let logEntries = [];
+
+    fileInput.addEventListener("change", event => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        tbody.innerHTML = ""; // limpiar tabla
+        logEntries = [];       // limpiar entradas previas
+        threadFilter.innerHTML = '<option value="all">Todos</option>'; // reset select
+
+        const lines = e.target.result.trim().split("\n");
+        const threadsSet = new Set();
+
+        lines.forEach(line => {
+          const parts = line.split("|").map(p => p.trim());
+          if (parts.length === 3) {
+            const entry = { thread: parts[0], action: parts[1], time: parts[2] };
+            logEntries.push(entry);
+            threadsSet.add(parts[0]);
+          }
         });
+
+        // llenar select con threads
+        threadsSet.forEach(thread => {
+          const option = document.createElement("option");
+          option.value = thread;
+          option.textContent = thread;
+          threadFilter.appendChild(option);
+        });
+
+        renderTable("all");
+      };
+      reader.readAsText(file);
+    });
+
+    threadFilter.addEventListener("change", () => {
+      renderTable(threadFilter.value);
+    });
+
+    function renderTable(filterThread) {
+      tbody.innerHTML = "";
+      logEntries.forEach(entry => {
+        if (filterThread === "all" || entry.thread === filterThread) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${entry.thread}</td><td>${entry.action}</td><td>${entry.time}</td>`;
+          tbody.appendChild(tr);
+        }
       });
+    }
   </script>
 </body>
 </html>
