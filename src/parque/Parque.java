@@ -5,6 +5,9 @@ import java.math.BigInteger;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import util.Salida;
+
+
 public class Parque {
     private final Semaphore molinetes;
     private final Random rnd = new Random();
@@ -24,7 +27,7 @@ public class Parque {
             }
 
             molinetes.release();
-            System.out.println("Visitante " + v.getIdVisitante() + " pasó por un molinete.");
+            Salida.log(v.getIdVisitante() , "paso por un molinete");
             enviarADestino(v);
 
         } catch (InterruptedException e) {

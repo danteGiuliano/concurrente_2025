@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Log de Simulación</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; background: white; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #333; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Log de Simulación</h1>
+  <table id="logTable">
+    <thead>
+      <tr>
+        <th>ID Thread</th>
+        <th>Acción</th>
+        <th>Hora</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch("simulacion.log")
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.trim().split("\n");
+        const tbody = document.querySelector("#logTable tbody");
+        rows.forEach(row => {
+          const [thread, action, time] = row.split(",");
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${thread}</td><td>${action}</td><td>${time}</td>`;
+          tbody.appendChild(tr);
+        });
+      });
+  </script>
+</body>
+</html>
