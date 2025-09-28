@@ -12,17 +12,20 @@ public class Salida {
 
     public static boolean DEBUG = false;
 
-    public static synchronized void log(BigInteger threadId, String action) {
+    public static void log(BigInteger threadId, String action) {
 
         if (!DEBUG) {
             System.out.println("Visitante " + threadId + " " + action);
         } else {
-            try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
-                String currentTime = LocalDateTime.now().format(FORMATTER);
-                String MESSAGE = threadId + "|" + action + "|" + currentTime;
-                fw.write(MESSAGE + "\n");
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            synchronized (Salida.class) {
+                try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
+                    String currentTime = LocalDateTime.now().format(FORMATTER);
+                    String MESSAGE = threadId + "|" + action + "|" + currentTime;
+                    fw.write(MESSAGE + "\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

@@ -1,47 +1,41 @@
 package parque;
 
-
-import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Semaphore;
 
 import util.Salida;
 
-
 public class Parque {
-    private final Semaphore molinetes;
-    private final Random rnd = new Random();
-    private BigInteger ticket= BigInteger.ZERO;
+    private final List<Molinete> molinetes = new ArrayList<>();
+    Random rng = new Random();
+
+
+
 
     public Parque(int kMolinetes) {
-        this.molinetes = new Semaphore(kMolinetes, true);
+        for (int i = 0; i < kMolinetes; i++) {
+            molinetes.add(new Molinete(i + 1));
+        }
     }
 
     public void ingresarParque(Visitante v) {
-        try {
-            molinetes.acquire();
-
-            synchronized (this.ticket) {
-                this.ticket = this.ticket.add(BigInteger.ONE);
-                v.setPase(this.ticket);
-            }
-
-            molinetes.release();
-            Salida.log(v.getIdVisitante() , "paso por un molinete");
-            enviarADestino(v);
-
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } 
-    }
-
-
-    // ESTO SIMULARIA la aleatoriedad  
-
-    private void enviarADestino(Visitante v) {
-        int opcion = rnd.nextInt(4); 
-        switch (opcion) {
-
+        if (!Reloj.estaAbierto()) {
+            Salida.log(v.getIdVisitante(), "no pudo entrar, parque cerrado");
+            return;
         }
+        molinetes.get(
+            this.rng.nextInt(molinetes.size()))
+            .intentarIngresar(v);
     }
+
+
+
+    // A partir de aca. se sabe. que un visitante. ya posee ticket y puede navegar por el Parque. hasta que tenga una sesion valida.
+    public void mapa(){
+
+
+    }
+
+
 }
