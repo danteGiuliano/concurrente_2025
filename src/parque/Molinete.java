@@ -1,6 +1,8 @@
 package parque;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Semaphore;
 
 import util.Salida;
@@ -20,37 +22,37 @@ import util.Salida;
  * NOTA: los multiples return con un boolean. es para simplificar la logica. ya
  * que puede existir condiciones de carrera.
  * 
- * - El finally, siempre se ejecuta. por ende el semaforo se libera a pesar de un return. en el try. hay que tener cuidado de no usar un return en el finally.
+ * - El finally, siempre se ejecuta. por ende el semaforo se libera a pesar de
+ * un return. en el try. hay que tener cuidado de no usar un return en el
+ * finally.
  */
 
 public class Molinete {
     private final int id;
-    private BigInteger contador = BigInteger.ZERO; 
-    private boolean abierto = true;
+    private BigInteger contador = BigInteger.ZERO;
     private final Semaphore semaforo = new Semaphore(1, true);
+
 
     public Molinete(int id) {
         this.id = id;
     }
 
     public boolean intentarIngresar(Visitante v) {
-        if (!abierto) {
+        if (!Reloj.operativo()) {
             Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado");
             return false;
         }
 
         try {
             semaforo.acquire();
-            synchronized (this) {
-                if (!abierto) {
-                    Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado");
-                    return false;
-                }
-                contador = contador.add(BigInteger.ONE);
-                v.setPase(contador);
-                Salida.log(v.getIdVisitante(), "pasó por molinete " + id + " ticket " + contador);
-                return true;
+            if (!Reloj.operativo()) {
+                Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado");
+                return false;
             }
+            contador = contador.add(BigInteger.ONE);
+            v.setPase(contador);
+            Salida.log(v.getIdVisitante(), "paso por molinete " + id + " ticket N:" + contador );
+            return true;
         } catch (InterruptedException e) {
             Salida.log(v.getIdVisitante(), "ERROR EN MOLINETE " + id);
             return false;
@@ -59,7 +61,4 @@ public class Molinete {
         }
     }
 
-    public synchronized void cerrar() {
-        abierto = false;
-    }
 }

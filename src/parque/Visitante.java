@@ -3,7 +3,7 @@ package parque;
 import java.math.BigInteger;
 
 public class Visitante implements Runnable {
-    private BigInteger ID ;
+    private BigInteger ID;
     private final Parque parque;
 
     public Visitante(Parque parque) {
@@ -14,12 +14,19 @@ public class Visitante implements Runnable {
         return this.ID;
     }
 
-    public void setPase(BigInteger pase ) {
+    public void setPase(BigInteger pase) {
         this.ID = pase;
     }
 
     @Override
     public void run() {
-        parque.ingresarParque(this);
+        while (true) {
+            parque.ingresarParque(this);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
