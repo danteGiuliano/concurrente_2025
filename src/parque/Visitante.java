@@ -5,6 +5,7 @@ import java.math.BigInteger;
 public class Visitante implements Runnable {
     private BigInteger ID;
     private final Parque parque;
+    private Billetera billetera = new Billetera(0);
 
     public Visitante(Parque parque) {
         this.parque = parque;

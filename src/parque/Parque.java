@@ -8,6 +8,8 @@ import util.Salida;
 
 public class Parque {
     private final List<Molinete> molinetes = new ArrayList<>();
+    private  List<Ticketera> ticketeras;
+
     Random rng = new Random();
 
     public Parque(int kMolinetes) {
