@@ -1,19 +1,22 @@
 package parque;
 
+import java.math.BigInteger;
 import java.util.concurrent.Exchanger;
+import util.Salida;
 
-public class Ticketera implements Runnable {
+public class Ticketera extends Thread {
 
-    private final Exchanger<Billetera> exchanger;
+    private  Exchanger<Billetera> swap = new Exchanger<>();
     private final String tipoFicha;
+    private boolean activa = true;
+    private BigInteger idTicketera = BigInteger.valueOf(0);
 
-    public Ticketera(Exchanger<Billetera> exchanger, String tipoFicha) {
-        this.exchanger = exchanger;
+    public Ticketera( String tipoFicha) {
         this.tipoFicha = tipoFicha;
     }
 
     private int valorFicha() {
-        return switch (tipoFicha.toLowerCase()) {
+        return switch (tipoFicha.toUpperCase()) {
             case "MR-FICHAS" -> 3;
             case "AC-FICHAS" -> 2;
             case "AI-FICHAS" -> 1;
@@ -21,23 +24,31 @@ public class Ticketera implements Runnable {
         };
     }
 
+     public Exchanger<Billetera> getExchanger() {
+        return swap;
+    }
+
     @Override
     public void run() {
-        try {
-            while (true) {
-                Billetera billetera = exchanger.exchange(null);
-                if (billetera == null)
-                    continue;
+        while (activa) {
+            try {
+                // Espera que un visitante intercambie su billetera
+                Billetera billetera = swap.exchange(null);
 
-                int valor = valorFicha();
-                billetera.cargarFichas(valor);
-                System.out.println("Ticketera (" + tipoFicha + "): cargó " + valor + " fichas -> " + billetera);
+                billetera.cargarFichas( valorFicha());
+                Salida.log(this.idTicketera, "Entregó " + valorFicha() + " fichas de tipo " + tipoFicha);
 
-                exchanger.exchange(billetera);
+                swap.exchange(billetera);
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                activa = false;
             }
-        } catch (InterruptedException e) {
-            System.out.println("Ticketera interrumpida");
-            Thread.currentThread().interrupt();
         }
+    }
+
+    public void detener() {
+        activa = false;
+        this.interrupt();
     }
 }

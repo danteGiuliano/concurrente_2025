@@ -3,12 +3,15 @@ package parque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Exchanger;
 
+import parque.juegosMecanicos.MontaniaRusa;
 import util.Salida;
 
 public class Parque {
     private final List<Molinete> molinetes = new ArrayList<>();
-    private  List<Ticketera> ticketeras;
+
+    private MontaniaRusa montaniaRusa = new MontaniaRusa(5, 5);
 
     Random rng = new Random();
 
@@ -24,16 +27,20 @@ public class Parque {
             return;
         }
         molinetes.get(
-            this.rng.nextInt(molinetes.size()))
-            .intentarIngresar(v);
+                this.rng.nextInt(molinetes.size()))
+                .intentarIngresar(v);
     }
 
+    // A partir de aca. se sabe. que un visitante. ya posee ticket y puede navegar
+    // por el Parque. hasta que tenga una sesion valida.
+    public void mapa(Visitante v) throws InterruptedException {
 
-    // A partir de aca. se sabe. que un visitante. ya posee ticket y puede navegar por el Parque. hasta que tenga una sesion valida.
-    public void mapa(){
-
+        if (this.montaniaRusa.intentarEntrar(v)) {
+            this.montaniaRusa.iniciarViaje(v);
+            this.montaniaRusa.obtenerFichas(v);
+        }
+        ;
 
     }
-
 
 }

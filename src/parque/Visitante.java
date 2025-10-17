@@ -19,6 +19,13 @@ public class Visitante implements Runnable {
         this.ID = pase;
     }
 
+    public Billetera getBilletera() {
+        return billetera;
+    }
+    public void setBilletera(Billetera b){
+        this.billetera = b;
+    }
+
     @Override
     public void run() {
         while (true) {
