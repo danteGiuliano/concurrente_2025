@@ -9,7 +9,7 @@ public class Ticketera extends Thread {
     private  Exchanger<Billetera> swap = new Exchanger<>();
     private final String tipoFicha;
     private boolean activa = true;
-    private BigInteger idTicketera = BigInteger.valueOf(0);
+    private BigInteger idTicketera = BigInteger.valueOf(-1);
 
     public Ticketera( String tipoFicha) {
         this.tipoFicha = tipoFicha;
@@ -36,7 +36,7 @@ public class Ticketera extends Thread {
                 Billetera billetera = swap.exchange(null);
 
                 billetera.cargarFichas( valorFicha());
-                Salida.log(this.idTicketera, "Entregó " + valorFicha() + " fichas de tipo " + tipoFicha);
+                Salida.log("TICKETERA", "Entregó " + valorFicha() + " fichas de tipo " + tipoFicha );
 
                 swap.exchange(billetera);
 

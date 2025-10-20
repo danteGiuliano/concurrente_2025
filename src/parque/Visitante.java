@@ -29,8 +29,10 @@ public class Visitante implements Runnable {
     @Override
     public void run() {
         while (true) {
-            parque.ingresarParque(this);
             try {
+                if ( parque.ingresarParque(this)) {  
+                    parque.mapa(this);
+                }
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

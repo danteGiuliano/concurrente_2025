@@ -4,17 +4,27 @@
   <meta charset="UTF-8">
   <title>Log de Simulación</title>
   <style>
-    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
-    table { border-collapse: collapse; width: 100%; background: white; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background: #333; color: white; }
-    tr:nth-child(even) { background: #f9f9f9; }
-    input, select { padding: 5px; font-size: 16px; margin-top: 10px; }
+    body { font-family: Arial; background: #1e1e1e; color: #ddd; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; background: #2c2c2c; margin-top: 20px; }
+    th, td { border: 1px solid #444; padding: 8px; text-align: left; }
+    th { background: #007acc; color: white; }
+    tr:nth-child(even) { background: #252525; }
+    input, select {
+      padding: 6px;
+      font-size: 15px;
+      margin-top: 10px;
+      background: #333;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 4px;
+    }
+    h1 { color: #6cf; }
   </style>
 </head>
 <body>
   <h1>Log de Simulación</h1>
-  <label for="fileInput">Seleccioná tu archivo log:</label>
+  
+  <label for="fileInput">Seleccioná tu archivo .log:</label>
   <input type="file" id="fileInput" accept=".log,.txt">
 
   <br>
@@ -24,11 +34,17 @@
     <option value="all">Todos</option>
   </select>
 
+  <br>
+
+  <label for="textSearch">Buscar texto (Acción o Recurso):</label>
+  <input type="text" id="textSearch" placeholder="Ej: mutex, montaña rusa, parque cerrado">
+
   <table id="logTable">
     <thead>
       <tr>
         <th>ID Thread</th>
         <th>Acción</th>
+        <th>Recurso</th>
         <th>Hora</th>
       </tr>
     </thead>
@@ -38,6 +54,7 @@
   <script>
     const fileInput = document.getElementById("fileInput");
     const threadFilter = document.getElementById("threadFilter");
+    const textSearch = document.getElementById("textSearch");
     const tbody = document.querySelector("#logTable tbody");
     let logEntries = [];
 
@@ -47,45 +64,74 @@
 
       const reader = new FileReader();
       reader.onload = e => {
-        tbody.innerHTML = ""; // limpiar tabla
-        logEntries = [];       // limpiar entradas previas
-        threadFilter.innerHTML = '<option value="all">Todos</option>'; // reset select
+        tbody.innerHTML = "";
+        logEntries = [];
+        threadFilter.innerHTML = '<option value="all">Todos</option>';
 
-        const lines = e.target.result.trim().split("\n");
+        // Dividimos por '#', limpiamos y filtramos vacíos
+        const chunks = e.target.result.split("#").map(l => l.trim()).filter(l => l.length > 0);
         const threadsSet = new Set();
 
-        lines.forEach(line => {
+        chunks.forEach(line => {
           const parts = line.split("|").map(p => p.trim());
-          if (parts.length === 3) {
-            const entry = { thread: parts[0], action: parts[1], time: parts[2] };
-            logEntries.push(entry);
+          if (parts.length === 4) {
+            logEntries.push({
+              thread: parts[0],
+              action: parts[1],
+              resource: parts[2],
+              time: parts[3]
+            });
+            threadsSet.add(parts[0]);
+          } else if (parts.length === 3) {
+            logEntries.push({
+              thread: parts[0],
+              action: parts[1],
+              resource: "",
+              time: parts[2]
+            });
             threadsSet.add(parts[0]);
           }
         });
 
-        // llenar select con threads
-        threadsSet.forEach(thread => {
+        // llenar combo de threads ordenados
+        Array.from(threadsSet).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(thread => {
           const option = document.createElement("option");
           option.value = thread;
           option.textContent = thread;
           threadFilter.appendChild(option);
         });
 
-        renderTable("all");
+        renderTable("all", "");
       };
       reader.readAsText(file);
     });
 
     threadFilter.addEventListener("change", () => {
-      renderTable(threadFilter.value);
+      renderTable(threadFilter.value, textSearch.value.trim());
     });
 
-    function renderTable(filterThread) {
+    textSearch.addEventListener("input", () => {
+      renderTable(threadFilter.value, textSearch.value.trim());
+    });
+
+    function renderTable(filterThread, searchText) {
       tbody.innerHTML = "";
+      const search = searchText.toLowerCase();
+
       logEntries.forEach(entry => {
-        if (filterThread === "all" || entry.thread === filterThread) {
+        const matchThread = filterThread === "all" || entry.thread === filterThread;
+        const matchText =
+          entry.action.toLowerCase().includes(search) ||
+          entry.resource.toLowerCase().includes(search);
+
+        if (matchThread && matchText) {
           const tr = document.createElement("tr");
-          tr.innerHTML = `<td>${entry.thread}</td><td>${entry.action}</td><td>${entry.time}</td>`;
+          tr.innerHTML = `
+            <td>${entry.thread}</td>
+            <td>${entry.action}</td>
+            <td>${entry.resource || "-"}</td>
+            <td>${entry.time}</td>
+          `;
           tbody.appendChild(tr);
         }
       });

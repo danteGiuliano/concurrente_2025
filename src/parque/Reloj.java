@@ -40,7 +40,7 @@ public class Reloj extends Thread {
     private void esperar(int segundos) {
         try {
             Thread.sleep(segundos);
-            Salida.log(BigInteger.valueOf(Thread.currentThread().getId()), abierto ? "Cerrando parque" : "Abriendo parque");
+            Salida.log(("RELOJ"), abierto ? "Cerrando parque" : "Abriendo parque");
             abierto = !abierto;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

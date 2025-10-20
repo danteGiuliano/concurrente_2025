@@ -32,7 +32,6 @@ public class Molinete {
     private BigInteger contador = BigInteger.ZERO;
     private final Semaphore semaforo = new Semaphore(1, true);
 
-
     public Molinete(int id) {
         this.id = id;
     }
@@ -51,7 +50,7 @@ public class Molinete {
             }
             contador = contador.add(BigInteger.ONE);
             v.setPase(contador);
-            Salida.log(v.getIdVisitante(), "paso por molinete " + id + " ticket N:" + contador );
+            Salida.log(v.getIdVisitante(), "paso por molinete " + id + " ticket N:" + contador);
             return true;
         } catch (InterruptedException e) {
             Salida.log(v.getIdVisitante(), "ERROR EN MOLINETE " + id);

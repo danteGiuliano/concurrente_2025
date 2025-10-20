@@ -28,6 +28,7 @@ public class MontaniaRusa {
     private final Semaphore carrito = new Semaphore(CAPACIDAD_VIAJE, true);
 
     private final Semaphore barrier = new Semaphore(0, true);
+    private final Semaphore mutex = new Semaphore(1, true);
 
     public MontaniaRusa(int CAPACIDAD_COLA, int CAPACIDAD_VIAJE) {
 
@@ -41,16 +42,16 @@ public class MontaniaRusa {
 
 
         if (this.carrito.tryAcquire()) {
-            Salida.log(v.getIdVisitante(), "SE SUBE AL CARRITO");
+            Salida.log(v.getIdVisitante(), "se sube al carrito | MONTANIA RUSA");
             return true;
         } else {
             if (colaEspera.size() < CAPACIDAD_VIAJE) {
-                Salida.log(v.getIdVisitante(), "DECIDE IR A LA COLA DE ESPERA");
+                Salida.log(v.getIdVisitante(), "decide ir a la cola de espera | MONTANIA RUSA");
                 colaEspera.take();
                 this.carrito.acquire(); // SI O SI DEBE TOMAR EL PERMISO DEL CARRITO
                 return true;
             } else {
-                Salida.log(v.getIdVisitante(), "TODO LLENO, SE VA DE LA MONTAÑA RUSA");
+                Salida.log(v.getIdVisitante(), "todo lleno se va del juego | MONTANIA RUSA");
                 return false;
             }
 
@@ -63,23 +64,28 @@ public class MontaniaRusa {
         if (carrito.availablePermits() > 0) {
             barrier.acquire(); // ESPERA A QUE SE LLENE EL CARRITO
         } else {
-            Salida.log(v.getIdVisitante(), "COMIENZA EL VIAJE ");
+            Salida.log(v.getIdVisitante(), "comienza el viaje | MONTANIA RUSA");
             Thread.sleep(5000);
-            Salida.log(v.getIdVisitante(), "TERMINA EL VIAJE EL VIAJE ");
+            Salida.log(v.getIdVisitante(), "termina el viaje | MONTANIA RUSA");
             this.barrier.release(CAPACIDAD_VIAJE - 1); //Bajan de manera ordenada y van por sus tickets
         }
 
     }
 
     public void obtenerFichas(Visitante v) throws InterruptedException {
-        Salida.log(v.getIdVisitante(), "Obtiene sus fichas");
+
+        this.mutex.acquire();
+        Salida.log(v.getIdVisitante(), "pasa a obtener sus fichas | MONTANIA RUSA");
         Exchanger<Billetera> lector = ticketera.getExchanger();
 
-       
+        // se envia la billetera para cargar fichas
         lector.exchange(v.getBilletera());
+        // recibe la billetera actualizada
         Billetera actualizada = lector.exchange(null);
         v.setBilletera(actualizada);
 
-        Salida.log(v.getIdVisitante(), "OBTUVO FICHAS Y VUELVE AL PARQUE");
+        Salida.log(v.getIdVisitante(), "obtuvo fichas, vuelve al parque | MONTANIA RUSA");
+        this.mutex.release();
+
     }
 }

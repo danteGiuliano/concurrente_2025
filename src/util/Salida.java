@@ -2,9 +2,9 @@ package util;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Semaphore;
 
 public class Salida {
     private static final String FILE_NAME = "simulacion.log";
@@ -12,23 +12,30 @@ public class Salida {
 
     public static boolean DEBUG = false;
 
-    public static void log(BigInteger threadId, String action) {
+    private static final Semaphore mutex = new Semaphore(1 , true);
 
+    public static void log(Object threadId, String action) {
         if (!DEBUG) {
             System.out.println("Visitante " + threadId + " " + action);
-        } else {
-
-            synchronized (Salida.class) {
-                try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
-                    String currentTime = LocalDateTime.now().format(FORMATTER);
-                    String MESSAGE = threadId + "|" + action + "|" + currentTime;
-                    fw.write(MESSAGE + "\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            return;
         }
 
-    }
+        String currentTime = LocalDateTime.now().format(FORMATTER);
+        String message = "#"+threadId + "|" + action + "|" + currentTime +"#"+ "\n";
 
+        try {
+            // Adquirir el permiso (bloquea si otro hilo está escribiendo)
+            mutex.acquire();
+
+            try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
+                fw.write(message);
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            // Liberar el permiso
+            mutex.release();
+        }
+    }
 }
