@@ -40,21 +40,22 @@ public class MontaniaRusa {
 
     public boolean intentarEntrar(Visitante v) throws InterruptedException {
 
-
         if (this.carrito.tryAcquire()) {
             Salida.log(v.getIdVisitante(), "se sube al carrito | MONTANIA RUSA");
             return true;
         } else {
-            if (colaEspera.size() < CAPACIDAD_VIAJE) {
+            // intenta entrar a la cola de espera (no bloquear indefinidamente si está llena)
+            if (colaEspera.offer(v)) {
                 Salida.log(v.getIdVisitante(), "decide ir a la cola de espera | MONTANIA RUSA");
-                colaEspera.take();
-                this.carrito.acquire(); // SI O SI DEBE TOMAR EL PERMISO DEL CARRITO
+                // espera hasta que se libere un permiso del carrito
+                this.carrito.acquire();
+                // al obtener el permiso, se retira de la cola (se asegura quitar su propia referencia)
+                colaEspera.remove(v);
                 return true;
             } else {
                 Salida.log(v.getIdVisitante(), "todo lleno se va del juego | MONTANIA RUSA");
                 return false;
             }
-
         }
 
     }
@@ -62,12 +63,17 @@ public class MontaniaRusa {
     public void iniciarViaje(Visitante v) throws InterruptedException {
 
         if (carrito.availablePermits() > 0) {
-            barrier.acquire(); // ESPERA A QUE SE LLENE EL CARRITO
+            // espera a que el carrito se llene (los que están dentro bloquearon aquí)
+            barrier.acquire();
         } else {
+            // soy el último que llenó el carrito -> hago el viaje
             Salida.log(v.getIdVisitante(), "comienza el viaje | MONTANIA RUSA");
             Thread.sleep(5000);
             Salida.log(v.getIdVisitante(), "termina el viaje | MONTANIA RUSA");
-            this.barrier.release(CAPACIDAD_VIAJE - 1); //Bajan de manera ordenada y van por sus tickets
+            // despierto a los otros pasajeros para que bajen
+            this.barrier.release(CAPACIDAD_VIAJE - 1);
+            // reinicio los permisos del carrito para la próxima tanda
+            this.carrito.release(CAPACIDAD_VIAJE);
         }
 
     }

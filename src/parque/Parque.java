@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import parque.juegosMecanicos.AutitosChocadores;
 import parque.juegosMecanicos.MontaniaRusa;
 import util.Salida;
 
@@ -13,6 +14,7 @@ public class Parque {
     private final Semaphore entradaParque = new Semaphore(1, true); // Add this line
 
     private MontaniaRusa montaniaRusa = new MontaniaRusa(5, 5);
+    private AutitosChocadores autitosChocadores = new AutitosChocadores(10);
 
     Random rng = new Random();
 
@@ -24,15 +26,15 @@ public class Parque {
 
     public boolean ingresarParque(Visitante v) {
         if (!Reloj.operativo()) {
-            Salida.log(v.getIdVisitante(), "no puedo entrar, parque cerrado");
+            Salida.log(v.getIdVisitante(), "no puedo entrar, parque cerrado | PARQUE ");
             return false;
         }
 
         try {
-            entradaParque.acquire(); 
+            entradaParque.acquire();
             return molinetes.get(this.rng.nextInt(molinetes.size())).intentarIngresar(v);
         } catch (InterruptedException e) {
-            Salida.log(v.getIdVisitante(), "ERROR en entrada del parque EXCEPCION");
+            Salida.log(v.getIdVisitante(), "ERROR en entrada del parque EXCEPCION | PARQUE ");
             return false;
         } finally {
             entradaParque.release();
@@ -41,18 +43,46 @@ public class Parque {
 
     // A partir de aca. se sabe. que un visitante. ya posee ticket y puede navegar
     // por el Parque. hasta que tenga una sesion valida.
-    public void mapa(Visitante v) throws InterruptedException {
+    public void mapa(Visitante v) {
 
-        if(!Reloj.operativo()){
-            return;
+        while (Reloj.operativo()) {
+            this.montaniaRusa(v);
+            this.autitosChocadores(v);
         }
 
-        if (this.montaniaRusa.intentarEntrar(v)) {
-            this.montaniaRusa.iniciarViaje(v);
-            this.montaniaRusa.obtenerFichas(v);
+        Salida.log(v.getIdVisitante(), "parque cerrado se va a casa | PARQUE ");
+    }
+
+    public boolean parqueAbierto() {
+        return Reloj.operativo();
+
+    }
+
+    public void montaniaRusa(Visitante v) {
+
+        try {
+            if (this.montaniaRusa.intentarEntrar(v)) {
+                this.montaniaRusa.iniciarViaje(v);
+                this.montaniaRusa.obtenerFichas(v);
+            }
+
+        } catch (Exception e) {
+                Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | MONTANIA RUSA "); 
+
         }
 
-        this.mapa(v);
+    }
+
+    public void autitosChocadores(Visitante v) {
+        try {
+            if (this.autitosChocadores.intentarEntrar(v)) {
+                this.autitosChocadores.esperarInicioYJugar(v);
+                this.autitosChocadores.obtenerFichas(v);
+            }
+
+        } catch (Exception e) {
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | AUTITOS CHOCADORES "); 
+        }
 
     }
 

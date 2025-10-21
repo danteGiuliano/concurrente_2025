@@ -16,25 +16,24 @@ public class Salida {
 
     public static void log(Object threadId, String action) {
         if (!DEBUG) {
-            System.out.println("Visitante " + threadId + " " + action);
+            System.out.println("Thread-" + Thread.currentThread().getName() + 
+                             " (Visitante " + threadId + ") " + action);
             return;
         }
 
         String currentTime = LocalDateTime.now().format(FORMATTER);
-        String message = "#"+threadId + "|" + action + "|" + currentTime +"#"+ "\n";
+        String message = "#" + Thread.currentThread().getName() + 
+                        "|" + action + 
+                        "|" + currentTime + "#\n";
 
         try {
-            // Adquirir el permiso (bloquea si otro hilo está escribiendo)
             mutex.acquire();
-
             try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
                 fw.write(message);
             }
-
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            // Liberar el permiso
             mutex.release();
         }
     }

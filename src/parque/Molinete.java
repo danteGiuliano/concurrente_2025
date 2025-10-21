@@ -38,22 +38,22 @@ public class Molinete {
 
     public boolean intentarIngresar(Visitante v) {
         if (!Reloj.operativo()) {
-            Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado");
+            Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado | PARQUE ");
             return false;
         }
 
         try {
             semaforo.acquire();
             if (!Reloj.operativo()) {
-                Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado");
+                Salida.log(v.getIdVisitante(), "rechazado por MOLINETE, parque cerrado | PARQUE");
                 return false;
             }
             contador = contador.add(BigInteger.ONE);
             v.setPase(contador);
-            Salida.log(v.getIdVisitante(), "paso por molinete " + id + " ticket N:" + contador);
+            Salida.log(v.getIdVisitante(), "paso por molinete " + id + " ticket N:" + contador + "| PARQUE");
             return true;
         } catch (InterruptedException e) {
-            Salida.log(v.getIdVisitante(), "ERROR EN MOLINETE " + id);
+            Salida.log(v.getIdVisitante(), "ERROR EN MOLINETE " + id + " | PARQUE");
             return false;
         } finally {
             semaforo.release();
