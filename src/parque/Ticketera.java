@@ -1,6 +1,5 @@
 package parque;
 
-import java.math.BigInteger;
 import java.util.concurrent.Exchanger;
 import util.Salida;
 
@@ -9,10 +8,19 @@ public class Ticketera extends Thread {
     private  Exchanger<Billetera> swap = new Exchanger<>();
     private final String tipoFicha;
     private boolean activa = true;
-    private BigInteger idTicketera = BigInteger.valueOf(-1);
+    private final boolean suma;   // true = entrega, false = descuenta
+    private final int monto;      // monto fijo a aplicar; si <= 0 se usa valorFicha()
 
-    public Ticketera( String tipoFicha) {
+    // compat constructor: entrega según tipo (comportamiento original)
+    public Ticketera(String tipoFicha) {
+        this(tipoFicha, true, -1);
+    }
+
+    // nuevo constructor: permite configurar suma/descuenta y monto fijo
+    public Ticketera(String tipoFicha, boolean suma, int monto) {
         this.tipoFicha = tipoFicha;
+        this.suma = suma;
+        this.monto = monto;
     }
 
     private int valorFicha() {
@@ -32,11 +40,17 @@ public class Ticketera extends Thread {
     public void run() {
         while (activa) {
             try {
-                // Espera que un visitante intercambie su billetera
                 Billetera billetera = swap.exchange(null);
 
-                billetera.cargarFichas( valorFicha());
-                Salida.log("TICKETERA", "Entregó " + valorFicha() + " fichas de tipo " + tipoFicha );
+                if (suma) {
+                    int entregar = (monto > 0) ? monto : valorFicha();
+                    billetera.cargarFichas(entregar);
+                    Salida.log("TICKETERA", "Entregó " + entregar + " fichas de tipo " + tipoFicha );
+                } else {
+                    int quitar = (monto > 0) ? monto : valorFicha();
+                    boolean ok = billetera.quitarFichas(quitar);
+                    Salida.log("TICKETERA", "Intentó descontar " + quitar + " fichas (" + tipoFicha + ") -> " + (ok ? "OK" : "FONDO INSUFICIENTE"));
+                }
 
                 swap.exchange(billetera);
 

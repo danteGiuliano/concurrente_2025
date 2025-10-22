@@ -15,6 +15,14 @@ public class Billetera {
         return fichas;
     }
 
+    public boolean quitarFichas(int cantidad) {
+    if (this.fichas >= cantidad) {
+        this.fichas -= cantidad;
+        return true;
+    }
+    return false;
+}
+
     @Override
     public String toString() {
         return "Billetera con " + fichas + " fichas";
