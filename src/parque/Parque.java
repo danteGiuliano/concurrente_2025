@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import parque.areaPremios.AreaPremios;
+import parque.comedor.Comedor;
 import parque.juegosMecanicos.AutitosChocadores;
 import parque.juegosMecanicos.MontaniaRusa;
 import parque.teatro.Teatro;
@@ -19,6 +20,7 @@ public class Parque {
     private AutitosChocadores autitosChocadores = new AutitosChocadores(10);
     private AreaPremios areaPremios = new AreaPremios();
     private Teatro teatro = new Teatro(2); // 2 asistentes
+    private Comedor comedor = new Comedor(5); // 5 mesas
 
     Random rng = new Random();
 
@@ -52,6 +54,11 @@ public class Parque {
         while (Reloj.operativo()) {
             this.montaniaRusa(v);
             this.autitosChocadores(v);
+            
+            // El visitante decide si va al comedor (25% probabilidad)
+            if (rng.nextInt(100) < 25) {
+                this.comedor(v);
+            }
             
             // El visitante decide si va al teatro (20% probabilidad)
             if (rng.nextInt(100) < 20) {
@@ -111,6 +118,14 @@ public class Parque {
             this.teatro.intentarEntrar(v);
         } catch (Exception e) {
             Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | TEATRO"); 
+        }
+    }
+
+    public void comedor(Visitante v) {
+        try {
+            this.comedor.almorzar(v);
+        } catch (Exception e) {
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | COMEDOR"); 
         }
     }
 }
