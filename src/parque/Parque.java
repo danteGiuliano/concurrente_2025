@@ -10,6 +10,7 @@ import parque.comedor.Comedor;
 import parque.juegosMecanicos.AutitosChocadores;
 import parque.juegosMecanicos.MontaniaRusa;
 import parque.teatro.Teatro;
+import parque.realidadVirtual.RealidadVirtual;
 import util.Salida;
 
 public class Parque {
@@ -19,8 +20,9 @@ public class Parque {
     private MontaniaRusa montaniaRusa = new MontaniaRusa(5, 5);
     private AutitosChocadores autitosChocadores = new AutitosChocadores(10);
     private AreaPremios areaPremios = new AreaPremios();
-    private Teatro teatro = new Teatro(2); // 2 asistentes
-    private Comedor comedor = new Comedor(5); // 5 mesas
+    private Teatro teatro = new Teatro(2);
+    private Comedor comedor = new Comedor(5);
+    private RealidadVirtual realidadVirtual = new RealidadVirtual(4, 8, 4);
 
     Random rng = new Random();
 
@@ -54,17 +56,22 @@ public class Parque {
         while (Reloj.operativo()) {
             this.montaniaRusa(v);
             this.autitosChocadores(v);
-            
+
             // El visitante decide si va al comedor (25% probabilidad)
             if (rng.nextInt(100) < 25) {
                 this.comedor(v);
             }
-            
+
             // El visitante decide si va al teatro (20% probabilidad)
             if (rng.nextInt(100) < 20) {
                 this.teatro(v);
             }
-            
+
+            // El visitante decide si va a Realidad Virtual (20% probabilidad) 
+            if (rng.nextInt(100) < 20) {
+                this.realidadVirtual(v);
+            }
+
             // El visitante decide si va al área de premios con probabilidad
             if (rng.nextInt(100) < 30 && v.getBilletera().getFichas() > 0) {
                 this.areaPremios(v);
@@ -90,7 +97,7 @@ public class Parque {
                 this.montaniaRusa.obtenerFichas(v);
             }
         } catch (Exception e) {
-            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | MONTANIA RUSA "); 
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | MONTANIA RUSA ");
         }
     }
 
@@ -101,7 +108,7 @@ public class Parque {
                 this.autitosChocadores.obtenerFichas(v);
             }
         } catch (Exception e) {
-            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | AUTITOS CHOCADORES "); 
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | AUTITOS CHOCADORES ");
         }
     }
 
@@ -109,7 +116,7 @@ public class Parque {
         try {
             this.areaPremios.canjearPremio(v);
         } catch (Exception e) {
-            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | AREA PREMIOS "); 
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | AREA PREMIOS ");
         }
     }
 
@@ -117,7 +124,7 @@ public class Parque {
         try {
             this.teatro.intentarEntrar(v);
         } catch (Exception e) {
-            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | TEATRO"); 
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | TEATRO");
         }
     }
 
@@ -125,7 +132,20 @@ public class Parque {
         try {
             this.comedor.almorzar(v);
         } catch (Exception e) {
-            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | COMEDOR"); 
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | COMEDOR");
+        }
+    }
+
+    public void realidadVirtual(Visitante v) {
+        try {
+            if (this.realidadVirtual.participar(v)) {
+                this.realidadVirtual.realizarActividadVR(v);
+                this.realidadVirtual.devolverEquipo(v);
+                this.realidadVirtual.obtenerFichas(v);
+            }
+
+        } catch (Exception e) {
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | REALIDAD VIRTUAL");
         }
     }
 }
