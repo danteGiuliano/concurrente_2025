@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import parque.areaPremios.AreaPremios;
+import parque.carreraDeGomones.CarreraGomones;
 import parque.comedor.Comedor;
 import parque.juegosMecanicos.AutitosChocadores;
 import parque.juegosMecanicos.MontaniaRusa;
@@ -23,6 +24,13 @@ public class Parque {
     private Teatro teatro = new Teatro(2);
     private Comedor comedor = new Comedor(5);
     private RealidadVirtual realidadVirtual = new RealidadVirtual(4, 8, 4);
+    private CarreraGomones carreraGomones = new CarreraGomones(
+            10, // 10 bicicletas en el stand
+            8, // 8 gomones individuales
+            5, // 5 gomones dobles
+            20, // 20 bolsos con llave disponibles
+            5 // Se necesitan 5 gomones para iniciar carrera
+    );
 
     Random rng = new Random();
 
@@ -67,7 +75,7 @@ public class Parque {
                 this.teatro(v);
             }
 
-            // El visitante decide si va a Realidad Virtual (20% probabilidad) 
+            // El visitante decide si va a Realidad Virtual (20% probabilidad)
             if (rng.nextInt(100) < 20) {
                 this.realidadVirtual(v);
             }
@@ -75,6 +83,10 @@ public class Parque {
             // El visitante decide si va al área de premios con probabilidad
             if (rng.nextInt(100) < 30 && v.getBilletera().getFichas() > 0) {
                 this.areaPremios(v);
+            }
+
+            if (rng.nextInt(100) < 25) {
+                this.carreraGomones(v);
             }
         }
 
@@ -146,6 +158,15 @@ public class Parque {
 
         } catch (Exception e) {
             Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | REALIDAD VIRTUAL");
+        }
+    }
+
+    public void carreraGomones(Visitante v) {
+        try {
+            this.carreraGomones.participar(v);
+        } catch (Exception e) {
+            Salida.log(v.getIdVisitante(),
+                    "interrumpido en el parque EXCEPCION | CARRERA GOMONES");
         }
     }
 }
