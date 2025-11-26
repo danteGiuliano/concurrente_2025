@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Recursos Compartidos - Parque</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #header {
+            background: #16213e;
+            padding: 20px;
+            border-bottom: 3px solid #0f3460;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #00d4ff;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        #controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: #0f3460;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #00d4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,212,255,0.3);
+        }
+        
+        #diagram-container {
+            width: 100%;
+            height: calc(100vh - 200px);
+            position: relative;
+            overflow: hidden;
+            background: #0f0f1e;
+            border-top: 2px solid #0f3460;
+        }
+        
+        svg {
+            cursor: move;
+        }
+        
+        .node {
+            cursor: grab;
+            transition: filter 0.2s;
+        }
+        
+        .node:active {
+            cursor: grabbing;
+        }
+        
+        .node:hover {
+            filter: brightness(1.3) drop-shadow(0 0 10px rgba(255,255,255,0.5));
+        }
+        
+        .node.dragging {
+            opacity: 0.8;
+            filter: brightness(1.2);
+        }
+        
+        .node rect {
+            stroke-width: 3;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        }
+        
+        .node.selected rect {
+            stroke: #fff;
+            stroke-width: 4;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));
+        }
+        
+        .node text {
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #4a5568;
+            stroke-width: 2;
+            opacity: 0.6;
+            marker-end: url(#arrowhead);
+        }
+        
+        .link.highlighted {
+            stroke: #00d4ff;
+            stroke-width: 3;
+            opacity: 1;
+        }
+        
+        #info-panel {
+            background: #16213e;
+            border-top: 3px solid #0f3460;
+            padding: 15px;
+            min-height: 100px;
+            max-height: 180px;
+            overflow-y: auto;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+        
+        #info-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #info-panel::-webkit-scrollbar-track {
+            background: #0f1419;
+        }
+        
+        #info-panel::-webkit-scrollbar-thumb {
+            background: #0f3460;
+            border-radius: 4px;
+        }
+        
+        #info-panel::-webkit-scrollbar-thumb:hover {
+            background: #00d4ff;
+        }
+        
+        .info-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+        
+        .info-section {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #64b5f6;
+        }
+        
+        .info-value {
+            color: #ddd;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .info-detail {
+            background: rgba(15, 52, 96, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 8px;
+            border-left: 3px solid #00d4ff;
+        }
+        
+        .info-code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 3px;
+            color: #7dd3fc;
+            font-size: 12px;
+        }
+        
+        .connection-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .connection-badge {
+            background: #0f3460;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #64b5f6;
+        }
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(22, 33, 62, 0.9);
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #00d4ff;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🎢 Diagrama de Recursos Compartidos - Parque Concurrente</h1>
+        <p class="subtitle">Sistema de sincronización y gestión de recursos con hilos concurrentes</p>
+        <div id="controls">
+            <button onclick="zoomIn()">🔍 Zoom In</button>
+            <button onclick="zoomOut()">🔍 Zoom Out</button>
+            <button onclick="resetZoom()">↺ Reset</button>
+            <button onclick="centerView()">⊙ Centrar</button>
+            <button onclick="downloadSVG()">💾 Descargar SVG</button>
+            <button onclick="resetSelection()">✖ Limpiar Selección</button>
+        </div>
+    </div>
+    
+    <div id="diagram-container">
+        <div id="zoom-info">Zoom: 100% | Arrastra para mover</div>
+        <svg id="diagram"></svg>
+    </div>
+    
+    <div id="info-panel">
+        <div class="info-title">📋 Información del Recurso</div>
+        <p style="color: #888; font-style: italic;">Haz clic en cualquier recurso para ver detalles</p>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3b82f6;"></div>
+                <span>Entrada/Control</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ef4444;"></div>
+                <span>Juegos Mecánicos</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #10b981;"></div>
+                <span>Servicios</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #8b5cf6;"></div>
+                <span>Entretenimiento</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #06b6d4;"></div>
+                <span>Carrera Gomones</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f59e0b;"></div>
+                <span>Premios/Fichas</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const resources = [
+            {
+                id: 'molinetes',
+                name: 'Molinetes',
+                quantity: '3 unidades',
+                type: 'Semaphore(1, true)',
+                color: '#3b82f6',
+                x: 400,
+                y: 50,
+                width: 180,
+                height: 90,
+                description: 'Control de entrada al parque. Cada molinete usa un semáforo para garantizar acceso exclusivo.',
+                details: 'Asigna ticket único (BigInteger) a cada visitante. Verifica estado del Reloj antes de permitir entrada.',
+                implementation: 'private final Semaphore semaforo = new Semaphore(1, true);',
+                methods: ['intentarIngresar(Visitante v)', 'acquire()', 'release()'],
+                threads: ['Visitante', 'Reloj'],
+                connections: ['montania', 'autitos', 'comedor', 'teatro', 'realidadVirtual', 'carreraGomones', 'areaPremios']
+            },
+            {
+                id: 'montania',
+                name: 'Montaña Rusa',
+                quantity: 'Cola: 10, Carrito: 5',
+                type: 'Semaphore + BlockingQueue + Barrier',
+                color: '#ef4444',
+                x: 150,
+                y: 200,
+                width: 180,
+                height: 90,
+                description: 'Cola de espera (BlockingQueue) + carrito con capacidad limitada.',
+                details: 'Usa Semaphore(5) para el carrito. Barrier sincroniza inicio del viaje. Ticketera entrega fichas MR.',
+                implementation: 'private final Semaphore carrito = new Semaphore(5, true);\nprivate final BlockingQueue<Visitante> colaEspera = new ArrayBlockingQueue<>(10);',
+                methods: ['intentarEntrar()', 'iniciarViaje()', 'obtenerFichas()'],
+                threads: ['Visitante', 'Ticketera-MR'],
+                connections: ['ticketeras']
+            },
+            {
+                id: 'autitos',
+                name: 'Autitos Chocadores',
+                quantity: '10 autos (2 p/auto)',
+                type: 'Semaphore + CyclicBarrier',
+                color: '#ef4444',
+                x: 550,
+                y: 200,
+                width: 180,
+                height: 90,
+                description: 'Autos de 2 personas. Inicia cuando todos los autos están ocupados.',
+                details: 'CyclicBarrier(20) sincroniza inicio. Semaphore(20) controla capacidad. Ticketera entrega fichas AC.',
+                implementation: 'private final Semaphore autosDisponibles = new Semaphore(20, true);\nprivate final CyclicBarrier barrierInicio = new CyclicBarrier(20);',
+                methods: ['intentarEntrar()', 'esperarInicioYJugar()', 'obtenerFichas()'],
+                threads: ['Visitante', 'Ticketera-AC'],
+                connections: ['ticketeras']
+            },
+            {
+                id: 'realidadVirtual',
+                name: 'Realidad Virtual',
+                quantity: 'V:4, M:8, B:4',
+                type: 'Lock + Condition + Queue',
+                color: '#ec4899',
+                x: 150,
+                y: 350,
+                width: 180,
+                height: 90,
+                description: 'Encargado distribuye equipos completos (visor + 2 manoplas + base).',
+                details: 'Cola de visitantes esperando. Encargado (Thread) asigna componentes. Lock + Condition para sincronización.',
+                implementation: 'private final Lock lock = new ReentrantLock(true);\nprivate final Condition visitanteEsperando = lock.newCondition();',
+                methods: ['participar()', 'distribuirComponente()', 'devolverEquipo()', 'realizarActividadVR()'],
+                threads: ['Visitante', 'Encargado', 'Ticketera-RV'],
+                connections: ['ticketeras']
+            },
+            {
+                id: 'comedor',
+                name: 'Comedor',
+                quantity: '5 mesas (4 p/mesa)',
+                type: 'Lock + Condition',
+                color: '#10b981',
+                x: 350,
+                y: 350,
+                width: 180,
+                height: 90,
+                description: 'Mesas de 4 personas. Todos comen juntos cuando la mesa se completa.',
+                details: 'Cada mesa tiene Lock + Condition. Visitantes esperan hasta que mesa esté llena (4 personas).',
+                connections: []
+            },
+            {
+                id: 'teatro',
+                name: 'Teatro',
+                quantity: '2 Asistentes, Cap: 20',
+                type: 'Lock + Condition + Threads',
+                color: '#8b5cf6',
+                x: 550,
+                y: 350,
+                width: 180,
+                height: 90,
+                description: '2 Asistentes forman grupos de 5 personas. Capacidad total: 20.',
+                details: 'Asistentes (Threads) forman grupos. Lock + Condition sincroniza formación y espectáculo. 4 grupos de 5.',
+                connections: []
+            },
+            {
+                id: 'areaPremios',
+                name: 'Área Premios',
+                quantity: '11 tipos premios',
+                type: 'Semaphore(1) - Mutex',
+                color: '#f59e0b',
+                x: 750,
+                y: 200,
+                width: 180,
+                height: 90,
+                description: 'Encargado canjea fichas por premios. Stock limitado por premio.',
+                details: 'Mutex (Semaphore) protege catálogo. Busca premio más costoso disponible. Descuenta fichas de billetera.',
+                connections: []
+            },
+            {
+                id: 'carreraGomones',
+                name: 'Carrera de Gomones',
+                quantity: 'Sistema Complejo',
+                type: 'Multiple subsystems',
+                color: '#06b6d4',
+                x: 400,
+                y: 520,
+                width: 180,
+                height: 90,
+                description: 'Actividad compleja con múltiples fases y recursos.',
+                details: '7 subsistemas: Transporte, bolsos, gomones, camioneta, largada, carrera, premios. Flujo secuencial.',
+                connections: ['bicicletas', 'tren', 'bolsos', 'gomones', 'camioneta', 'controlLargada', 'sistemaPremiος']
+            },
+            {
+                id: 'bicicletas',
+                name: 'Stand Bicicletas',
+                quantity: '10 bicicletas',
+                type: 'Semaphore(10, true)',
+                color: '#14b8a6',
+                x: 100,
+                y: 680,
+                width: 180,
+                height: 90,
+                description: 'Transporte al inicio del recorrido (70% probabilidad).',
+                details: 'tryAcquire() no bloqueante. Si no hay bici, intenta tren. Simula viaje de 2 segundos.',
+                connections: []
+            },
+            {
+                id: 'tren',
+                name: 'Tren Interno',
+                quantity: 'Cap: 15 pasajeros',
+                type: 'Semaphore + CyclicBarrier',
+                color: '#0ea5e9',
+                x: 300,
+                y: 680,
+                width: 180,
+                height: 90,
+                description: 'Transporte alternativo. Parte cuando se llena o por timeout (8 seg).',
+                details: 'Thread independiente. CyclicBarrier(15) para salida. Timeout 8s. Resetea barrier tras cada viaje.',
+                connections: []
+            },
+            {
+                id: 'bolsos',
+                name: 'Sistema Bolsos',
+                quantity: '20 bolsos con llave',
+                type: 'Semaphore(20, true)',
+                color: '#6366f1',
+                x: 500,
+                y: 680,
+                width: 180,
+                height: 90,
+                description: 'Bolsos para guardar pertenencias. Con sistema de estados.',
+                details: 'Estados: DISPONIBLE, EN_USO, EN_TRANSPORTE, EN_DESTINO. tryAcquire() no bloqueante.',
+                connections: []
+            },
+            {
+                id: 'gomones',
+                name: 'Sistema Gomones',
+                quantity: 'Ind: 8, Doble: 5',
+                type: 'Semaphore x2',
+                color: '#8b5cf6',
+                x: 700,
+                y: 680,
+                width: 180,
+                height: 90,
+                description: 'Pool de gomones individuales y dobles. Prioridad a individuales.',
+                details: '2 Semáforos independientes. tryAcquire() primero individual, luego doble. Marca en uso durante carrera.',
+                connections: []
+            },
+            {
+                id: 'camioneta',
+                name: 'Camioneta',
+                quantity: 'Thread único',
+                type: 'BlockingQueue + Lock',
+                color: '#a855f7',
+                x: 150,
+                y: 830,
+                width: 180,
+                height: 90,
+                description: 'Transporta bolsos al destino. Cola de solicitudes.',
+                details: 'BlockingQueue para solicitudes. Lock + Condition para entrega. Simula transporte 2s + entrega 1s.',
+                connections: []
+            },
+            {
+                id: 'controlLargada',
+                name: 'Control Largada',
+                quantity: '5 gomones/carrera',
+                type: 'Lock + Condition + Atomic',
+                color: '#d946ef',
+                x: 400,
+                y: 830,
+                width: 180,
+                height: 90,
+                description: 'Espera G gomones para iniciar. Registra posiciones de llegada.',
+                details: 'Lock + Condition para espera. AtomicInteger para posiciones. Resetea tras cada carrera completada.',
+                connections: ['sistemaPremiος']
+            },
+            {
+                id: 'sistemaPremiος',
+                name: 'Premios Gomones',
+                quantity: 'Fichas CG',
+                type: 'Semaphore + Exchanger',
+                color: '#f43f5e',
+                x: 650,
+                y: 830,
+                width: 180,
+                height: 90,
+                description: 'Entrega fichas al ganador (posición 1).',
+                details: 'Usa Ticketera con Exchanger. Mutex protege transacción. Ganador en doble: ambos reciben premio.',
+                connections: ['ticketeras']
+            },
+            {
+                id: 'ticketeras',
+                name: 'Ticketeras',
+                quantity: '4 tipos (MR,AC,RV,CG)',
+                type: 'Exchanger + Thread',
+                color: '#f59e0b',
+                x: 750,
+                y: 350,
+                width: 180,
+                height: 90,
+                description: 'Hilos independientes. Intercambian billeteras con visitantes.',
+                details: 'Exchanger<Billetera>. Thread espera exchange(). Carga fichas según tipo: MR:3, AC:2, AI:1, CG:2.',
+                connections: ['areaPremios']
+            }
+        ];
+
+        const width = 1000;
+        const height = 1000;
+        let transform = d3.zoomIdentity;
+        let selectedNode = null;
+
+        const svg = d3.select('#diagram')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('viewBox', `0 0 ${width} ${height}`);
+
+        const g = svg.append('g');
+
+        // Definir marcador de flecha
+        svg.append('defs').append('marker')
+            .attr('id', 'arrowhead')
+            .attr('viewBox', '-0 -5 10 10')
+            .attr('refX', 8)
+            .attr('refY', 0)
+            .attr('orient', 'auto')
+            .attr('markerWidth', 8)
+            .attr('markerHeight', 8)
+            .append('path')
+            .attr('d', 'M 0,-5 L 10,0 L 0,5')
+            .attr('fill', '#4a5568');
+
+        // Crear conexiones
+        const links = [];
+        resources.forEach(source => {
+            if (source.connections) {
+                source.connections.forEach(targetId => {
+                    const target = resources.find(r => r.id === targetId);
+                    if (target) {
+                        links.push({ source, target });
+                    }
+                });
+            }
+        });
+
+        // Dibujar líneas
+        const linkElements = g.selectAll('.link')
+            .data(links)
+            .enter()
+            .append('path')
+            .attr('class', 'link')
+            .attr('d', d => {
+                const sourceX = d.source.x + d.source.width / 2;
+                const sourceY = d.source.y + d.source.height;
+                const targetX = d.target.x + d.target.width / 2;
+                const targetY = d.target.y;
+                
+                return `M ${sourceX} ${sourceY} L ${targetX} ${targetY}`;
+            });
+
+        // Dibujar nodos
+        const nodes = g.selectAll('.node')
+            .data(resources)
+            .enter()
+            .append('g')
+            .attr('class', 'node')
+            .attr('transform', d => `translate(${d.x}, ${d.y})`)
+            .on('click', function(event, d) {
+                event.stopPropagation();
+                selectNode(d);
+            })
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended)
+            );
+
+        nodes.append('rect')
+            .attr('width', d => d.width)
+            .attr('height', d => d.height)
+            .attr('rx', 10)
+            .attr('fill', d => d.color)
+            .attr('stroke', d => d.color);
+
+        nodes.append('text')
+            .attr('x', d => d.width / 2)
+            .attr('y', 30)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'white')
+            .attr('font-size', '16')
+            .attr('font-weight', 'bold')
+            .text(d => d.name);
+
+        nodes.append('text')
+            .attr('x', d => d.width / 2)
+            .attr('y', 50)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'rgba(255,255,255,0.8)')
+            .attr('font-size', '12')
+            .text(d => d.quantity);
+
+        nodes.append('text')
+            .attr('x', d => d.width / 2)
+            .attr('y', 70)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'rgba(255,255,255,0.7)')
+            .attr('font-size', '11')
+            .text(d => d.type);
+
+        // Zoom y pan
+        const zoom = d3.zoom()
+            .scaleExtent([0.3, 3])
+            .on('zoom', (event) => {
+                transform = event.transform;
+                g.attr('transform', transform);
+                updateZoomInfo();
+            });
+
+        svg.call(zoom);
+
+        // Funciones de drag para nodos
+        function dragstarted(event, d) {
+            d3.select(this).raise();
+            event.sourceEvent.stopPropagation();
+        }
+
+        function dragged(event, d) {
+            d.x = (event.x - transform.x) / transform.k;
+            d.y = (event.y - transform.y) / transform.k;
+            
+            d3.select(this).attr('transform', `translate(${d.x}, ${d.y})`);
+            
+            // Actualizar líneas conectadas
+            updateLinks();
+        }
+
+        function dragended(event, d) {
+            // Nada especial al terminar
+        }
+
+        function updateLinks() {
+            linkElements.attr('d', d => {
+                const sourceX = d.source.x + d.source.width / 2;
+                const sourceY = d.source.y + d.source.height;
+                const targetX = d.target.x + d.target.width / 2;
+                const targetY = d.target.y;
+                
+                return `M ${sourceX} ${sourceY} L ${targetX} ${targetY}`;
+            });
+        }
+
+        function selectNode(node) {
+            selectedNode = node;
+            
+            // Actualizar estilos
+            d3.selectAll('.node').classed('selected', false);
+            d3.selectAll('.node')
+                .filter(d => d.id === node.id)
+                .classed('selected', true);
+
+            // Highlight conexiones
+            linkElements.classed('highlighted', d => 
+                d.source.id === node.id || d.target.id === node.id
+            );
+
+            // Mostrar info
+            const infoPanel = document.getElementById('info-panel');
+            infoPanel.innerHTML = `
+                <div class="info-title">📦 ${node.name} (${node.quantity})</div>
+                <div class="info-section">
+                    <span class="info-label">🔧 Mecanismo:</span>
+                    <span class="info-value">${node.type}</span>
+                </div>
+                <div class="info-section">
+                    <span class="info-label">📝 Descripción:</span>
+                    <span class="info-value">${node.description}</span>
+                </div>
+                <div class="info-section">
+                    <span class="info-label">⚙️ Detalles técnicos:</span>
+                    <span class="info-value">${node.details}</span>
+                </div>
+                ${node.connections && node.connections.length > 0 ? `
+                <div class="info-section">
+                    <span class="info-label">🔗 Conecta con:</span>
+                    <span class="info-value">${node.connections.length} recurso(s)</span>
+                </div>` : ''}
+            `;
+        }
+
+        function resetSelection() {
+            selectedNode = null;
+            d3.selectAll('.node').classed('selected', false);
+            linkElements.classed('highlighted', false);
+            
+            document.getElementById('info-panel').innerHTML = `
+                <div class="info-title">📋 Información del Recurso</div>
+                <p style="color: #888; font-style: italic;">Haz clic en cualquier recurso para ver detalles</p>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color" style="background: #3b82f6;"></div><span>Entrada/Control</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #ef4444;"></div><span>Juegos Mecánicos</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div><span>Servicios</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #8b5cf6;"></div><span>Entretenimiento</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #06b6d4;"></div><span>Carrera Gomones</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #f59e0b;"></div><span>Premios/Fichas</span></div>
+                </div>
+            `;
+        }
+
+        function zoomIn() {
+            svg.transition().call(zoom.scaleBy, 1.3);
+        }
+
+        function zoomOut() {
+            svg.transition().call(zoom.scaleBy, 0.7);
+        }
+
+        function resetZoom() {
+            svg.transition().call(zoom.transform, d3.zoomIdentity);
+        }
+
+        function centerView() {
+            const bounds = g.node().getBBox();
+            const parent = svg.node().getBoundingClientRect();
+            const fullWidth = bounds.width;
+            const fullHeight = bounds.height;
+            const scale = 0.8 / Math.max(fullWidth / parent.width, fullHeight / parent.height);
+            const translate = [
+                parent.width / 2 - scale * (bounds.x + fullWidth / 2),
+                parent.height / 2 - scale * (bounds.y + fullHeight / 2)
+            ];
+            
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        function updateZoomInfo() {
+            const zoomLevel = Math.round(transform.k * 100);
+            document.getElementById('zoom-info').textContent = 
+                `Zoom: ${zoomLevel}% | Arrastra para mover`;
+        }
+
+        function downloadSVG() {
+            const svgElement = document.getElementById('diagram');
+            const serializer = new XMLSerializer();
+            let source = serializer.serializeToString(svgElement);
+            
+            source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+            const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+            
+            const downloadLink = document.createElement("a");
+            downloadLink.href = url;
+            downloadLink.download = "recursos-compartidos-parque.svg";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        // Centrar vista inicial
+        setTimeout(centerView, 100);
+    </script>
+</body>
+</html>
