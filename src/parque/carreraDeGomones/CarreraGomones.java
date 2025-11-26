@@ -34,52 +34,43 @@ public class CarreraGomones {
         Salida.log("SISTEMA", "Carrera de Gomones ABIERTA | CARRERA GOMONES");
     }
     
-    /**
-     * Visitante participa en la carrera completa
-     */
+   
     public void participar(Visitante v) throws InterruptedException {
-        
-        // FASE 1: Transporte al inicio
+        //1
         if (!llegarAlInicio(v)) {
             return;
         }
-        
-        // FASE 2: Obtener bolso
+        //2
         Bolso bolso = sistemaBolsos.obtenerBolso(v);
         if (bolso == null) {
             Salida.log(v.getIdVisitante(), "no hay bolsos disponibles | CARRERA GOMONES");
             return;
         }
-        
-        // FASE 3: Transportar bolso
+        //3
         camioneta.transportarBolso(bolso, v);
-        
-        // FASE 4: Obtener gomón
+        //4
         Gomon gomon = sistemaGomones.obtenerGomon(v);
         if (gomon == null) {
             sistemaBolsos.devolverBolso(bolso, v);
             return;
         }
-        
-        // FASE 5: Competir
+        //5
         int posicion = competir(v, gomon);
         
-        // FASE 6: Retirar bolso
+        // 6
         camioneta.retirarBolso(bolso, v);
         sistemaBolsos.devolverBolso(bolso, v);
         
-        // FASE 7: Premiar ganador
+        // 7
         if (posicion == 1) {
             sistemaPremios.entregarPremio(v, gomon);
         }
         
-        // FASE 8: Devolver gomón
+        // 8
         sistemaGomones.devolverGomon(gomon, v);
     }
     
-    /**
-     * Fase 1: Llegar al inicio del recorrido
-     */
+ 
     private boolean llegarAlInicio(Visitante v) throws InterruptedException {
         // 70% bicicleta, 30% tren
         if (Math.random() < 0.7) {
@@ -89,9 +80,7 @@ public class CarreraGomones {
         }
     }
     
-    /**
-     * Fase 5: Competir en la carrera
-     */
+  
     private int competir(Visitante v, Gomon gomon) throws InterruptedException {
         // Esperar largada
         controlLargada.esperarLargada(v, gomon);

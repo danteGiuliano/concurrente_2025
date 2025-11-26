@@ -79,7 +79,5 @@ public class Encargado {
         }
     }
 
-    public int getVisitantesAtendidos() {
-        return visitantesAtendidos;
-    }
+ 
 }
