@@ -6,10 +6,7 @@ import parque.Billetera;
 import parque.Visitante;
 import util.Salida;
 
-/**
- * El encargado maneja la entrega de premios a los visitantes.
- * Recibe fichas y entrega premios según la cantidad disponible.
- */
+
 public class Encargado {
     private final List<Premio> catalogoPremios;
     private final Semaphore mutex = new Semaphore(1, true);

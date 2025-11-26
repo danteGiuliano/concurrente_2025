@@ -10,15 +10,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Camioneta - Transporta bolsos al final del recorrido
- * 
- * RESPONSABILIDAD:
- * - Hilo independiente que transporta bolsos
- * - Recoger bolsos de los visitantes
- * - Llevarlos al punto final del río
- * - Entregarlos cuando los visitantes lleguen
- */
+
 public class Camioneta extends Thread {
     
     // Solicitudes de transporte pendientes
@@ -26,8 +18,7 @@ public class Camioneta extends Thread {
     
     // Bolsos que ya llegaron al destino
     private final Map<Bolso, Visitante> bolsosEnDestino;
-    
-    // Control de sincronización
+   
     private final Lock lock;
     private final Condition bolsoListo;
     
@@ -88,7 +79,7 @@ public class Camioneta extends Thread {
     }
     
     /**
-     * Camioneta entrega el bolso en el destino
+     * Camioeta entrega el bolso enn el destino
      */
     private void entregarBolsoEnDestino(SolicitudTransporte solicitud) {
         lock.lock();
@@ -137,20 +128,12 @@ public class Camioneta extends Thread {
         }
     }
     
-    /**
-     * Detiene la camioneta
-     */
-    public void detener() {
-        operativa = false;
-        this.interrupt();
-    }
+ 
     
-    /**
-     * Clase interna: Solicitud de transporte
-     */
+  
     private static class SolicitudTransporte {
-        final Bolso bolso;
-        final Visitante visitante;
+         Bolso bolso;
+         Visitante visitante;
         
         SolicitudTransporte(Bolso bolso, Visitante visitante) {
             this.bolso = bolso;

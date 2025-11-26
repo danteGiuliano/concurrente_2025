@@ -4,14 +4,7 @@ package parque.carreraDeGomones;
 import parque.Visitante;
 import util.Salida;
 
-/**
- * Carrera de Gomones - Coordina la actividad completa
- * 
- * RESPONSABILIDAD:
- * - Orquestar el flujo completo de la actividad
- * - Coordinar entre los diferentes componentes
- * - Bajo acoplamiento: delega responsabilidades específicas
- */
+
 public class CarreraGomones {
     
     private final StandBicicletas standBicicletas;

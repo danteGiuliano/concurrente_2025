@@ -29,7 +29,7 @@ public class Asistente extends Thread {
                     // Pequeña pausa después de formar un grupo
                     Thread.sleep(500);
                 } else {
-                    // Si no pudo formar grupo, espera un poco más
+                    // Si no pudo formar grupo, espera 
                     Thread.sleep(1000);
                 }
                 

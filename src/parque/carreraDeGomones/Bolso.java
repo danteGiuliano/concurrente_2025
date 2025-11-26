@@ -1,13 +1,6 @@
 package parque.carreraDeGomones;
 
-/**
- * Bolso - Contenedor para pertenencias del visitante
- * 
- * RESPONSABILIDAD:
- * - Representar un bolso físico con su llave
- * - Mantener identificación única
- * - Trackear estado (disponible/en uso/en transporte)
- */
+
 public class Bolso {
     
     public enum Estado {

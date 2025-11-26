@@ -2,19 +2,7 @@ package parque.realidadVirtual;
 
 import util.Salida;
 
-/**
- * Encargado de la atracción de Realidad Virtual.
- * 
- * RESPONSABILIDAD:
- * - Distribuir componentes (visores, manoplas, bases) a los visitantes
- * - Entregar componentes de manera incremental hasta completar equipos
- * 
- * FUNCIONAMIENTO:
- * - Hilo que corre continuamente
- * - Espera visitantes
- * - Distribuye componentes disponibles uno a uno
- * - Notifica cuando el equipo está completo
- */
+
 public class Encargado extends Thread {
     private final RealidadVirtual atraccion;
 

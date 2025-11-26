@@ -11,12 +11,12 @@ public class Ticketera extends Thread {
     private final boolean suma;   // true = entrega, false = descuenta
     private final int monto;      // monto fijo a aplicar; si <= 0 se usa valorFicha()
 
-    // compat constructor: entrega según tipo (comportamiento original)
+   
     public Ticketera(String tipoFicha) {
         this(tipoFicha, true, -1);
     }
 
-    // nuevo constructor: permite configurar suma/descuenta y monto fijo
+    
     public Ticketera(String tipoFicha, boolean suma, int monto) {
         this.tipoFicha = tipoFicha;
         this.suma = suma;

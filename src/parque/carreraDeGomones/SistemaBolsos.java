@@ -6,14 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-/**
- * Sistema de Bolsos - Gestiona préstamo de bolsos con llave
- * 
- * RESPONSABILIDAD:
- * - Administrar pool de bolsos disponibles
- * - Asignar bolsos a visitantes
- * - Recibir bolsos devueltos
- */
+
 public class SistemaBolsos {
     
     private final List<Bolso> bolsos;
@@ -77,7 +70,7 @@ public class SistemaBolsos {
                 return b;
             }
         }
-        return bolsos.get(0); // Fallback (no debería ocurrir)
+        return bolsos.get(0); 
     }
     
     public int getCantidadTotal() {

@@ -100,7 +100,7 @@ public class SistemaGomones {
                 return g;
             }
         }
-        return lista.get(0); // Fallback
+        return lista.get(0);
     }
     
     public int getTotalIndividuales() {

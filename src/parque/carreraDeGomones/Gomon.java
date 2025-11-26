@@ -1,13 +1,6 @@
 package parque.carreraDeGomones;
 
-/**
- * Gomón - Unidad de competencia en la carrera
- * 
- * RESPONSABILIDAD:
- * - Representar un gomón individual
- * - Mantener su tipo (individual/doble)
- * - Identificación única
- */
+
 public class Gomon {
     
     public enum Tipo {

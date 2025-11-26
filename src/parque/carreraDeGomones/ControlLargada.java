@@ -7,15 +7,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Control de Largada - Coordina inicio de carreras
- * 
- * RESPONSABILIDAD:
- * - Esperar hasta que haya G gomones listos
- * - Iniciar la carrera cuando se alcanza el número
- * - Registrar orden de llegada
- * - Resetear para próxima carrera
- */
+
 public class ControlLargada {
     
     private final int GOMONES_NECESARIOS; // G del enunciado
