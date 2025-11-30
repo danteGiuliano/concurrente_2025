@@ -143,7 +143,6 @@ public class AreaPremios {
     void notificarEntrega(SolicitudPremio solicitud) {
         lock.lock();
         try {
-            // Despertar SOLO al visitante específico
             solicitud.miCondition.signal();
         } finally {
             lock.unlock();
@@ -156,7 +155,7 @@ public class AreaPremios {
     
     static class SolicitudPremio {
         final Visitante visitante;
-        final Condition miCondition;  // ← Condition ÚNICA para este visitante
+        final Condition miCondition;  
         boolean atendido = false;
         boolean exitoso = false;
         Premio premioObtenido = null;

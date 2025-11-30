@@ -2,166 +2,169 @@ package parque.teatro;
 
 import parque.Visitante;
 import util.Salida;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.*;
+import java.util.concurrent.locks.*;
 
-/**
- * Teatro del parque con espectáculos periódicos.
- * Los asistentes forman grupos de 5 visitantes.
- * Capacidad total: 20 personas (4 grupos)
- */
 public class Teatro {
+
     private final int TAMANIO_GRUPO = 5;
-    private final int CANTIDAD_GRUPOS = 4;
-    private final int CAPACIDAD_TOTAL = TAMANIO_GRUPO * CANTIDAD_GRUPOS;
-    
-    // Lock y condiciones
+    private final int TOTAL_GRUPOS = 4;
+
     private final Lock lock = new ReentrantLock(true);
-    private final Condition esperandoGrupo = lock.newCondition();
-    private final Condition esperandoEspectaculo = lock.newCondition();
-    
-    // Estado del teatro
-    private int visitantesEnLobby = 0;
+
+    private final Condition hayVisitantes = lock.newCondition();
+    private final Condition visitantesLiberados = lock.newCondition();
+    private final Condition inicioEspectaculo = lock.newCondition();
+    private final Condition finEspectaculo = lock.newCondition();
+
+    // Cola de espera REAL
+    private final Queue<Visitante> colaLobby = new LinkedList<>();
+
+    // Visitantes habilitados a avanzar
+    private final Set<Visitante> habilitados = new HashSet<>();
+
+    // Estado
     private int gruposFormados = 0;
-    private int visitantesDentro = 0;
     private boolean espectaculoActivo = false;
-    
-    // Asistentes
+
     private final Asistente[] asistentes;
-    
+
     public Teatro(int cantidadAsistentes) {
-        this.asistentes = new Asistente[cantidadAsistentes];
+        asistentes = new Asistente[cantidadAsistentes];
         for (int i = 0; i < cantidadAsistentes; i++) {
             asistentes[i] = new Asistente(i, this);
             asistentes[i].start();
         }
     }
-    
-    /**
-     * Visitante intenta ingresar al teatro
-     */
+
+
+    // ================================
+    //  VISITANTE INTENTA ENTRAR
+    // ================================
     public boolean intentarEntrar(Visitante v) throws InterruptedException {
         lock.lock();
         try {
-            // Verificar disponibilidad
-            if (visitantesDentro >= CAPACIDAD_TOTAL || espectaculoActivo) {
-                Salida.log(v.getIdVisitante(), "teatro lleno o espectaculo en curso | TEATRO");
+            // Si ya hay espectáculo no entra
+            if (espectaculoActivo) {
+                Salida.log(v.getIdVisitante(), "no puede entrar, espectaculo en curso | TEATRO");
                 return false;
             }
-            
-            visitantesEnLobby++;
-            Salida.log(v.getIdVisitante(), "llega al lobby del teatro (" + visitantesEnLobby + " esperando) | TEATRO");
-            
-            // Notificar a asistentes que hay visitantes
-            esperandoGrupo.signalAll();
-            
-            // Esperar hasta que un asistente lo asigne a un grupo
-            while (visitantesEnLobby > 0 && !espectaculoActivo) {
-                esperandoGrupo.await();
+
+            // Entra al lobby
+            colaLobby.add(v);
+            Salida.log(v.getIdVisitante(), "entra al lobby (" + colaLobby.size() + " en cola) | TEATRO");
+
+            // Notifica asistentes
+            hayVisitantes.signalAll();
+
+            // Espera hasta que el Teatro lo libere para entrar al grupo
+            while (!habilitados.contains(v)) {
+                visitantesLiberados.await();
             }
-            
-            // Si el espectáculo inició sin poder entrar
-            if (espectaculoActivo && visitantesDentro >= CAPACIDAD_TOTAL) {
-                Salida.log(v.getIdVisitante(), "no pudo ingresar a tiempo | TEATRO");
-                return false;
-            }
-            
-            // Visitante dentro, espera el espectáculo
-            Salida.log(v.getIdVisitante(), "dentro del teatro, espera inicio | TEATRO");
-            
+
+            // Ya entró a la sala
+            Salida.log(v.getIdVisitante(), "se ubica en su asiento y espera el show | TEATRO");
+
+            // Espera inicio
             while (!espectaculoActivo) {
-                esperandoEspectaculo.await();
+                inicioEspectaculo.await();
             }
-            
-            Salida.log(v.getIdVisitante(), "disfruta del espectáculo  | TEATRO");
-            
-       
+
+            Salida.log(v.getIdVisitante(), "disfrutando del espectáculo | TEATRO");
+
+            // Espera fin
             while (espectaculoActivo) {
-                esperandoEspectaculo.await();
+                finEspectaculo.await();
             }
-            
-            Salida.log(v.getIdVisitante(), "sale del teatro satisfecho | TEATRO");
+
+            Salida.log(v.getIdVisitante(), "sale satisfecho | TEATRO");
             return true;
-            
+
         } finally {
             lock.unlock();
         }
     }
-    
-    /**
-     * Asistente forma un grupo de visitantes
-     */
+
+
+    // ================================
+    //  ASISTENTE FORMA GRUPO
+    // ================================
     boolean formarGrupo(int idAsistente) throws InterruptedException {
         lock.lock();
         try {
-            // Esperar visitantes
-            while (visitantesEnLobby < TAMANIO_GRUPO && !espectaculoActivo) {
-                esperandoGrupo.await();
-            }
-            
-            if (espectaculoActivo || gruposFormados >= CANTIDAD_GRUPOS) {
+            if (gruposFormados >= TOTAL_GRUPOS || espectaculoActivo)
                 return false;
-            }
-            
-            // Formar grupo
-            if (visitantesEnLobby >= TAMANIO_GRUPO) {
-                visitantesEnLobby -= TAMANIO_GRUPO;
-                gruposFormados++;
-                visitantesDentro += TAMANIO_GRUPO;
-                
-                Salida.log("ASISTENTE-" + idAsistente, 
-                    "formo grupo " + gruposFormados + " (" + TAMANIO_GRUPO + " personas) | TEATRO");
-                
-                esperandoGrupo.signalAll();
-                
 
-                if (gruposFormados == CANTIDAD_GRUPOS) {
-                    iniciarEspectaculo();
-                }
-                
-                return true;
+            // Esperar hasta que haya gente suficiente
+            while (colaLobby.size() < TAMANIO_GRUPO && !espectaculoActivo) {
+                hayVisitantes.await();
             }
-            
-            return false;
-            
+
+            if (espectaculoActivo) return false;
+
+            // Sacar 5 reales de la cola
+            List<Visitante> grupo = new ArrayList<>();
+
+            for (int i = 0; i < TAMANIO_GRUPO; i++) {
+                grupo.add(colaLobby.poll());
+            }
+
+            // Marcar esos visitantes como habilitados
+            habilitados.addAll(grupo);
+
+            gruposFormados++;
+
+            Salida.log("ASISTENTE-" + idAsistente,
+                    "formo grupo " + gruposFormados + " con 5 personas | TEATRO");
+
+            // Liberar a los visitantes de ese grupo
+            visitantesLiberados.signalAll();
+
+            if (gruposFormados == TOTAL_GRUPOS) {
+                iniciarEspectaculo(idAsistente);
+            }
+
+            return true;
+
         } finally {
             lock.unlock();
         }
     }
-    
-    /**
-     * Inicia el espectáculo
-     */
-    private void iniciarEspectaculo() {
+
+
+    // ================================
+    //     INICIAR ESPECTÁCULO
+    // ================================
+    private void iniciarEspectaculo(int asistente) {
         espectaculoActivo = true;
-        
-        esperandoEspectaculo.signalAll();
-        
-        // Hilo para finalizar espectáculo
+
+        Salida.log("ASISTENTE-" + asistente, "inicia el espectáculo | TEATRO");
+        inicioEspectaculo.signalAll();
+
         new Thread(() -> {
             try {
                 Thread.sleep(10000);
-                finalizarEspectaculo();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }, "Espectaculo-" ).start();
+                finalizarEspectaculo(asistente);
+            } catch (InterruptedException ignored) { }
+        }).start();
     }
-    
-   
-    private void finalizarEspectaculo() {
+
+
+    // ================================
+    //     FINALIZAR ESPECTÁCULO
+    // ================================
+    private void finalizarEspectaculo(int asistente) {
         lock.lock();
         try {
-            Salida.log("SISTEMA", "Espectaculo  | TEATRO");
-            
             espectaculoActivo = false;
-            visitantesDentro = 0;
             gruposFormados = 0;
-            
-            esperandoEspectaculo.signalAll();
-            esperandoGrupo.signalAll();
-            
+            habilitados.clear();
+
+            Salida.log("ASISTENTE-" + asistente, "finaliza el espectáculo | TEATRO");
+
+            finEspectaculo.signalAll();
+            hayVisitantes.signalAll(); // permitir nueva tanda
+
         } finally {
             lock.unlock();
         }
