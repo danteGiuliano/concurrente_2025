@@ -67,9 +67,7 @@ public class Camioneta extends Thread {
         Salida.log("CAMIONETA", "finaliza operaciones | CARRERA GOMONES");
     }
     
-    /**
-     * Visitante solicita transporte de su bolso
-     */
+  
     public void transportarBolso(Bolso bolso, Visitante v) throws InterruptedException {
         SolicitudTransporte solicitud = new SolicitudTransporte(bolso, v);
         colaSolicitudes.put(solicitud);
@@ -99,10 +97,7 @@ public class Camioneta extends Thread {
             lock.unlock();
         }
     }
-    
-    /**
-     * Visitante retira su bolso al finalizar carrera
-     */
+
     public void retirarBolso(Bolso bolso, Visitante v) throws InterruptedException {
         lock.lock();
         try {

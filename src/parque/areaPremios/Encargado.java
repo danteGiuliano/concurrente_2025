@@ -1,83 +1,94 @@
 package parque.areaPremios;
 
-import java.util.List;
-import java.util.concurrent.Semaphore;
 import parque.Billetera;
 import parque.Visitante;
+import parque.areaPremios.AreaPremios.SolicitudPremio;
 import util.Salida;
 
-
-public class Encargado {
-    private final List<Premio> catalogoPremios;
-    private final Semaphore mutex = new Semaphore(1, true);
+public class Encargado extends Thread {
+    private final AreaPremios areaPremios;
     private int visitantesAtendidos = 0;
-
-    public Encargado(List<Premio> catalogoPremios) {
-        this.catalogoPremios = catalogoPremios;
+    
+    public Encargado(AreaPremios areaPremios) {
+        super("Encargado-Premios");
+        this.areaPremios = areaPremios;
     }
-
-    /**
-     * Atiende a un visitante y le entrega un premio según sus fichas disponibles.
-     * @param v Visitante que solicita canjear fichas
-     * @return true si se pudo entregar algún premio, false si no tiene suficientes fichas
-     */
-    public boolean atenderVisitante(Visitante v) throws InterruptedException {
-        mutex.acquire();
-        try {
-            Billetera billetera = v.getBilletera();
-            int fichasDisponibles = billetera.getFichas();
-
-            Salida.log(v.getIdVisitante(), 
-                "llega al área de premios con " + fichasDisponibles + " fichas | AREA PREMIOS");
-
-            if (fichasDisponibles == 0) {
-                Salida.log(v.getIdVisitante(), 
-                    "no tiene fichas para canjear | AREA PREMIOS");
-                return false;
+    
+    @Override
+    public void run() {
+        Salida.log("ENCARGADO", "inicia su turno en el área de premios | AREA PREMIOS");
+        
+        while (true) {
+            try {
+                SolicitudPremio solicitud = areaPremios.obtenerSiguienteSolicitud();
+                atenderVisitante(solicitud);
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-            // Buscar el premio más costoso que el visitante pueda comprar
-            Premio premioSeleccionado = null;
-            for (Premio premio : catalogoPremios) {
-                if (premio.hayStock() && 
-                    premio.getCostoFichas() <= fichasDisponibles) {
-                    if (premioSeleccionado == null || 
-                        premio.getCostoFichas() > premioSeleccionado.getCostoFichas()) {
-                        premioSeleccionado = premio;
-                    }
-                }
-            }
-
-            if (premioSeleccionado == null) {
-                Salida.log(v.getIdVisitante(), 
-                    "no hay premios disponibles para su cantidad de fichas | AREA PREMIOS");
-                return false;
-            }
-
-            // Realizar el canje
-            if (billetera.quitarFichas(premioSeleccionado.getCostoFichas())) {
-                premioSeleccionado.decrementarStock();
-                visitantesAtendidos++;
-                
-                Salida.log(v.getIdVisitante(), 
-                    "canjeo " + premioSeleccionado.getCostoFichas() + 
-                    " fichas por: " + premioSeleccionado.getNombre() + 
-                    " | AREA PREMIOS");
-                
-                Salida.log("ENCARGADO", 
-                    "entrego " + premioSeleccionado.getNombre() + 
-                    " a visitante " + v.getIdVisitante() + 
-                    " (Total atendidos: " + visitantesAtendidos + ")");
-                
-                return true;
-            }
-
-            return false;
-
-        } finally {
-            mutex.release();
         }
     }
-
- 
+    
+    private void atenderVisitante(SolicitudPremio solicitud) throws InterruptedException {
+        Visitante v = solicitud.visitante;
+        Billetera billetera = v.getBilletera();
+        int fichasDisponibles = billetera.getFichas();
+        
+        Salida.log("ENCARGADO", 
+            "atendiendo a visitante " + v.getIdVisitante() + 
+            " con " + fichasDisponibles + " fichas | AREA PREMIOS");
+        
+        Premio premioSeleccionado = areaPremios.buscarMejorPremio(fichasDisponibles);
+        
+        if (premioSeleccionado == null) {
+            Salida.log("ENCARGADO", 
+                "no hay premios disponibles para visitante " + v.getIdVisitante() + 
+                " | AREA PREMIOS");
+            
+            solicitud.atendido = true;
+            solicitud.exitoso = false;
+            areaPremios.notificarEntrega();
+            return;
+        }
+        
+        if (realizarTransaccion(v, premioSeleccionado)) {
+            visitantesAtendidos++;
+            solicitud.exitoso = true;
+            
+            Salida.log("ENCARGADO", 
+                "entregó " + premioSeleccionado.getNombre() + 
+                " a visitante " + v.getIdVisitante() + 
+                " (Total atendidos: " + visitantesAtendidos + ") | AREA PREMIOS");
+        } else {
+            solicitud.exitoso = false;
+            
+            Salida.log("ENCARGADO", 
+                "no pudo completar transacción con visitante " + v.getIdVisitante() + 
+                " | AREA PREMIOS");
+        }
+        
+        solicitud.atendido = true;
+        areaPremios.notificarEntrega();
+    }
+    
+    private boolean realizarTransaccion(Visitante v, Premio premio) throws InterruptedException {
+        Billetera billetera = v.getBilletera();
+        
+        if (!billetera.quitarFichas(premio.getCostoFichas())) {
+            return false;
+        }
+        
+        premio.decrementarStock();
+        Thread.sleep(1000);
+        
+        Salida.log(v.getIdVisitante(), 
+            "recibe " + premio.getNombre() + 
+            " (" + premio.getCostoFichas() + " fichas) | AREA PREMIOS");
+        
+        return true;
+    }
+    
+    public int getVisitantesAtendidos() {
+        return visitantesAtendidos;
+    }
 }

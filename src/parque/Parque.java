@@ -126,7 +126,7 @@ public class Parque {
 
     public void areaPremios(Visitante v) {
         try {
-            this.areaPremios.canjearPremio(v);
+            this.areaPremios.solicitarPremio(v);
         } catch (Exception e) {
             Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | AREA PREMIOS ");
         }
