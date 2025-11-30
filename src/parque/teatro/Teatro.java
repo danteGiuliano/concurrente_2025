@@ -111,7 +111,7 @@ public class Teatro {
                 visitantesDentro += TAMANIO_GRUPO;
                 
                 Salida.log("ASISTENTE-" + idAsistente, 
-                    "formó grupo " + gruposFormados + " (" + TAMANIO_GRUPO + " personas) | TEATRO");
+                    "formo grupo " + gruposFormados + " (" + TAMANIO_GRUPO + " personas) | TEATRO");
                 
                 esperandoGrupo.signalAll();
                 
@@ -153,7 +153,7 @@ public class Teatro {
     private void finalizarEspectaculo() {
         lock.lock();
         try {
-            Salida.log("SISTEMA", "Espectáculo  | TEATRO");
+            Salida.log("SISTEMA", "Espectaculo  | TEATRO");
             
             espectaculoActivo = false;
             visitantesDentro = 0;

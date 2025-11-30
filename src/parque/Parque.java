@@ -62,8 +62,8 @@ public class Parque {
     public void mapa(Visitante v) {
 
         while (Reloj.operativo()) {
-            this.montaniaRusa(v);
-            this.autitosChocadores(v);
+            // this.montaniaRusa(v);
+            // this.autitosChocadores(v);
 
             // El visitante decide si va al comedor (25% probabilidad)
             // if (rng.nextInt(100) < 25) {
@@ -71,9 +71,9 @@ public class Parque {
             // }
 
             // El visitante decide si va al teatro (20% probabilidad)
-            // if (rng.nextInt(100) < 20) {
-            //     this.teatro(v);
-            // }
+            if (rng.nextInt(100) < 20) {
+                this.teatro(v);
+            }
 
             // El visitante decide si va a Realidad Virtual (20% probabilidad)
             // if (rng.nextInt(100) < 20) {
@@ -81,9 +81,9 @@ public class Parque {
             // }
 
             // El visitante decide si va al área de premios con probabilidad
-            if (rng.nextInt(100) < 30 && v.getBilletera().getFichas() > 0) {
-                this.areaPremios(v);
-            }
+            // if (rng.nextInt(100) < 30 && v.getBilletera().getFichas() > 0) {
+            //     this.areaPremios(v);
+            // }
 
             // if (rng.nextInt(100) < 25) {
             //     this.carreraGomones(v);

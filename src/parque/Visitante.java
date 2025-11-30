@@ -3,8 +3,8 @@ package parque;
 import java.math.BigInteger;
 
 public class Visitante implements Runnable {
-    private final BigInteger ID;  // ← ID permanente del visitante
-    private BigInteger ticketNumero;  // ← Número de ticket del molinete
+    private final BigInteger ID; 
+    private BigInteger ticketNumero; 
     private final Parque parque;
     private Billetera billetera = new Billetera(0);
 
