@@ -42,7 +42,7 @@ public class ControlLargada {
             gomonesListos++;
             
             Salida.log(v.getIdVisitante(), 
-                "listo en línea de largada (" + gomonesListos + "/" + 
+                "listo en linea de largada (" + gomonesListos + "/" + 
                 GOMONES_NECESARIOS + ") | CARRERA GOMONES");
             
             // Esperar hasta completar G gomones
