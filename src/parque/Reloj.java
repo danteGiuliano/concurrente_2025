@@ -24,6 +24,7 @@ public class Reloj extends Thread {
     private static boolean abierto = false;
 
     public Reloj( int apertura, int cierre) {
+        super("RELOJ");
         this.apertura = apertura;
         this.cierre = cierre;
     }

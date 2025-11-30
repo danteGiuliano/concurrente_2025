@@ -32,11 +32,15 @@ public class RealidadVirtual {
 
     private final Encargado encargado;
 
+    private int visitantesAtendidos = 0; // LOS VISITANTES ATENDIDOS DEBEN COINCIDIR CON LA CANTIDAD DE VECES QUE SE ENTREGO RV FICHAS
+
+
     public RealidadVirtual(int visores, int manoplas, int bases) {
 
         this.visoresDisponibles = visores;
         this.manoplasDisponibles = manoplas;
         this.basesDisponibles = bases;
+
 
         encargado = new Encargado(this);
         encargado.start();
@@ -115,11 +119,10 @@ public class RealidadVirtual {
                         "entrega BASE a visitante " + p.visitante.getIdVisitante() + "| REALIDAD VIRTUAL");
             }
 
-            // Si el equipo del visitante quedó completo
-            // Si el equipo del visitante quedó completo
             if (eq.estaCompleto()) {
+                this.visitantesAtendidos++;
                 Salida.log("ENCARGADO",
-                        "equipo COMPLETO para visitante " + p.visitante.getIdVisitante() + "| REALIDAD VIRTUAL");
+                        "equipo COMPLETO para visitante " + p.visitante.getIdVisitante() + " VISITANTES ATENDIDOS:"+this.visitantesAtendidos+"| REALIDAD VIRTUAL");
 
                 cola.remove(); // ya no está esperando equipo
                 equiposEnUso.put(p.visitante, p); // lo registramos como equipo en uso
@@ -154,9 +157,9 @@ public class RealidadVirtual {
                 basesDisponibles++;
 
             Salida.log("SISTEMA",
-                    "equipo devuelto - V:" + visoresDisponibles +
-                            " M:" + manoplasDisponibles +
-                            " B:" + basesDisponibles);
+                    "equipo devuelto - VISORES DISPONIBLES:" + visoresDisponibles +
+                            " MANOPLAS DISPONIBLES:" + manoplasDisponibles +
+                            " BASES DISPONIBLES:" + basesDisponibles + "| REALIDAD VIRTUAL");
 
             visitanteEsperando.signal(); // por si alguien está esperando componentes
 

@@ -71,14 +71,14 @@ public class Parque {
             // }
 
             // El visitante decide si va al teatro (20% probabilidad)
-            if (rng.nextInt(100) < 20) {
-                this.teatro(v);
-            }
+            // if (rng.nextInt(100) < 20) {
+            //     this.teatro(v);
+            // }
 
             // El visitante decide si va a Realidad Virtual (20% probabilidad)
-            // if (rng.nextInt(100) < 20) {
-            //     this.realidadVirtual(v);
-            // }
+            if (rng.nextInt(100) < 20) {
+                this.realidadVirtual(v);
+            }
 
             // El visitante decide si va al área de premios con probabilidad
             // if (rng.nextInt(100) < 30 && v.getBilletera().getFichas() > 0) {
@@ -91,9 +91,9 @@ public class Parque {
         }
 
         // Antes de irse, intenta canjear fichas restantes
-        if (v.getBilletera().getFichas() > 0) {
-            this.areaPremios(v);
-        }
+        // if (v.getBilletera().getFichas() > 0) {
+        //     this.areaPremios(v);
+        // }
 
         Salida.log(v.getIdVisitante(), "parque cerrado se va a casa | PARQUE ");
     }

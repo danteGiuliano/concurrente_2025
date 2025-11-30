@@ -63,12 +63,7 @@ public class SistemaPremios {
         }
     }
     
-    /**
-     * Detiene el sistema de premios
-     */
-    public void detener() {
-        ticketera.detener();
-    }
+    
     
     public int getGanadoresAtendidos() {
         return ganadoresAtendidos;
