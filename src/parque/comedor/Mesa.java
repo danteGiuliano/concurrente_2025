@@ -6,113 +6,106 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Mesa del comedor con capacidad para 4 personas.
- * Todos empiezan a comer al mismo tiempo cuando la mesa se llena.
- */
 public class Mesa {
+
     private final int id;
     private final int CAPACIDAD = 4;
-    
+
     private final Lock lock = new ReentrantLock(true);
     private final Condition mesaCompleta = lock.newCondition();
-    
+
     private int visitantesSentados = 0;
     private boolean comiendo = false;
-    
-    public Mesa(int id) {
+
+    private final Comedor comedor;
+
+    public Mesa(int id, Comedor comedor) {
         this.id = id;
+        this.comedor = comedor;
     }
-    
-    /**
-     * Intenta sentarse en la mesa
-     * @return true si logró sentarse, false si está llena
-     */
+
     public boolean intentarSentarse(Visitante v) {
         lock.lock();
         try {
-            // Si la mesa está llena o están comiendo, no puede sentarse
             if (visitantesSentados >= CAPACIDAD || comiendo) {
                 return false;
             }
-            
+
             visitantesSentados++;
-            Salida.log(v.getIdVisitante(), 
-                "se sienta en mesa #" + id + " (" + visitantesSentados + "/" + CAPACIDAD + ") | COMEDOR");
-            
+
+            Salida.log(v.getIdVisitante(),
+                    "se sienta en mesa N:" + id + " (" + visitantesSentados + "/" + CAPACIDAD + ") | COMEDOR");
+
+            // avisamos a quienes esperan en la mesa (por si con esto se completa)
+            mesaCompleta.signalAll();
+
+            // **IMPORTANTE**: NO llamar a comedor.notificarLugarDisponible() desde aquí
+            // porque eso intentaría tomar comedor.lock mientras se tiene mesa.lock
+            // → riesgo de inversión de locks / deadlock.
+
             return true;
-            
+
         } finally {
             lock.unlock();
         }
     }
-    
-    /**
-     * Espera a que la mesa se complete y come
-     */
+
     public void esperarYComer(Visitante v) throws InterruptedException {
+        // esperar a que la mesa esté completa (política original)
         lock.lock();
         try {
-            // Esperar hasta que la mesa esté completa
             while (visitantesSentados < CAPACIDAD) {
                 mesaCompleta.await();
             }
-            
-            // Si soy el último en llegar, inicio la comida
+
             if (!comiendo) {
                 comiendo = true;
-                Salida.log("SISTEMA", 
-                    "Mesa #" + id + " completa, todos comienzan a comer | COMEDOR");
-                mesaCompleta.signalAll(); // Despertar a todos para que coman
+                Salida.log("SISTEMA",
+                        "Mesa N:" + id + " completa → todos comienzan a comer | COMEDOR");
+
+                // avisamos a los demás de la mesa que ya pueden proceder
+                mesaCompleta.signalAll();
             }
-            
-            // Todos comen juntos
-            Salida.log(v.getIdVisitante(), 
-                "comienza a almorzar en mesa #" + id + " | COMEDOR");
-            
+
+            Salida.log(v.getIdVisitante(),
+                    "comienza a almorzar en mesa N:" + id + " | COMEDOR");
+
         } finally {
             lock.unlock();
         }
-        
-        // Simular tiempo de comida (fuera del lock para no bloquear)
+
+        // simulamos comida (fuera del lock de mesa)
         Thread.sleep(5000);
-        
+
+        boolean debeNotificarComedor = false;
+
         lock.lock();
         try {
             visitantesSentados--;
-            Salida.log(v.getIdVisitante(), 
-                "termina de comer y se levanta de mesa #" + id + " | COMEDOR");
-            
-            // Si soy el último en irme, resetear la mesa
+
+            Salida.log(v.getIdVisitante(),
+                    "termina de comer y se levanta de mesa N:" + id + " | COMEDOR");
+
             if (visitantesSentados == 0) {
                 comiendo = false;
-                Salida.log("SISTEMA", 
-                    "Mesa #" + id + " disponible nuevamente | COMEDOR");
+
+                Salida.log("SISTEMA",
+                        "Mesa N:" + id + " ahora esta libre | COMEDOR");
+
+                // marcamos la necesidad de notificar AL COMEDOR, pero lo haremos fuera del lock
+                debeNotificarComedor = true;
             }
-            
+
         } finally {
             lock.unlock();
         }
-    }
-    
-    /**
-     * Notifica que la mesa está completa
-     */
-    public void notificarMesaCompleta() {
-        lock.lock();
-        try {
-            if (visitantesSentados == CAPACIDAD) {
-                mesaCompleta.signalAll();
-            }
-        } finally {
-            lock.unlock();
+
+        if (debeNotificarComedor) {
+            // llamada fuera del lock de mesa: evita inversión de locks
+            comedor.notificarLugarDisponible();
         }
     }
-    
-    public int getId() {
-        return id;
-    }
-    
+
     public boolean estaDisponible() {
         lock.lock();
         try {
@@ -120,5 +113,9 @@ public class Mesa {
         } finally {
             lock.unlock();
         }
+    }
+
+    public int getId() {
+        return id;
     }
 }
