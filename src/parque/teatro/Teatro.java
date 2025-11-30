@@ -26,7 +26,6 @@ public class Teatro {
     private int gruposFormados = 0;
     private int visitantesDentro = 0;
     private boolean espectaculoActivo = false;
-    private int numeroEspectaculo = 0;
     
     // Asistentes
     private final Asistente[] asistentes;
@@ -47,13 +46,12 @@ public class Teatro {
         try {
             // Verificar disponibilidad
             if (visitantesDentro >= CAPACIDAD_TOTAL || espectaculoActivo) {
-                Salida.log(v.getIdVisitante(), "teatro lleno o espectáculo en curso | TEATRO");
+                Salida.log(v.getIdVisitante(), "teatro lleno o espectaculo en curso | TEATRO");
                 return false;
             }
             
             visitantesEnLobby++;
-            Salida.log(v.getIdVisitante(), 
-                "llega al lobby del teatro (" + visitantesEnLobby + " esperando) | TEATRO");
+            Salida.log(v.getIdVisitante(), "llega al lobby del teatro (" + visitantesEnLobby + " esperando) | TEATRO");
             
             // Notificar a asistentes que hay visitantes
             esperandoGrupo.signalAll();
@@ -76,9 +74,9 @@ public class Teatro {
                 esperandoEspectaculo.await();
             }
             
-            Salida.log(v.getIdVisitante(), "disfruta del espectáculo #" + numeroEspectaculo + " | TEATRO");
+            Salida.log(v.getIdVisitante(), "disfruta del espectáculo  | TEATRO");
             
-            // Esperar fin del espectáculo
+       
             while (espectaculoActivo) {
                 esperandoEspectaculo.await();
             }
@@ -113,12 +111,11 @@ public class Teatro {
                 visitantesDentro += TAMANIO_GRUPO;
                 
                 Salida.log("ASISTENTE-" + idAsistente, 
-                    "formó grupo #" + gruposFormados + " (" + TAMANIO_GRUPO + " personas) | TEATRO");
+                    "formó grupo " + gruposFormados + " (" + TAMANIO_GRUPO + " personas) | TEATRO");
                 
-                // Notificar a los visitantes que fueron asignados
                 esperandoGrupo.signalAll();
                 
-                // Si se llenó el teatro, iniciar espectáculo
+
                 if (gruposFormados == CANTIDAD_GRUPOS) {
                     iniciarEspectaculo();
                 }
@@ -138,16 +135,6 @@ public class Teatro {
      */
     private void iniciarEspectaculo() {
         espectaculoActivo = true;
-        numeroEspectaculo++;
-        
-        Salida.log("SISTEMA", 
-            "════════════════════════════════════════");
-        Salida.log("SISTEMA", 
-            "ESPECTÁCULO #" + numeroEspectaculo + " COMIENZA");
-        Salida.log("SISTEMA", 
-            "Grupos: " + gruposFormados + " | Público: " + visitantesDentro);
-        Salida.log("SISTEMA", 
-            "════════════════════════════════════════");
         
         esperandoEspectaculo.signalAll();
         
@@ -159,16 +146,14 @@ public class Teatro {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-        }, "Espectaculo-" + numeroEspectaculo).start();
+        }, "Espectaculo-" ).start();
     }
     
-    /**
-     * Finaliza el espectáculo
-     */
+   
     private void finalizarEspectaculo() {
         lock.lock();
         try {
-            Salida.log("SISTEMA", "Espectáculo #" + numeroEspectaculo + " finalizado | TEATRO");
+            Salida.log("SISTEMA", "Espectáculo  | TEATRO");
             
             espectaculoActivo = false;
             visitantesDentro = 0;

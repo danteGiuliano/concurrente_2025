@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ControlLargada {
     
-    private final int GOMONES_NECESARIOS; // G del enunciado
+    private final int GOMONES_NECESARIOS; 
     
     private final Lock lock;
     private final Condition esperandoInicio;
@@ -68,10 +68,7 @@ public class ControlLargada {
         carreraEnCurso = true;
         posicionLlegada.set(0);
         
-        Salida.log("SISTEMA", "═══════════════════════════════════════");
-        Salida.log("SISTEMA", "      CARRERA #" + numeroCarrera);
-        Salida.log("SISTEMA", "      ¡LARGADA! " + GOMONES_NECESARIOS + " GOMONES");
-        Salida.log("SISTEMA", "═══════════════════════════════════════");
+        Salida.log("SISTEMA CONTROL DE LARGADA", "INICIA CARRERA | CARRERA GOMONES");
         
         // Despertar a todos los participantes
         esperandoInicio.signalAll();
@@ -82,7 +79,7 @@ public class ControlLargada {
     
     /**
      * Registra la llegada de un visitante
-     * @return posición en la que llegó (1 = ganador)
+     * @return posición en la que llegó 
      */
     public int registrarLlegada(Visitante v) {
         int posicion = posicionLlegada.incrementAndGet();

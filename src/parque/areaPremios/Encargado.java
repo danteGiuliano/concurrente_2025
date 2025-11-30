@@ -60,12 +60,12 @@ public class Encargado {
                 visitantesAtendidos++;
                 
                 Salida.log(v.getIdVisitante(), 
-                    "canjeó " + premioSeleccionado.getCostoFichas() + 
+                    "canjeo " + premioSeleccionado.getCostoFichas() + 
                     " fichas por: " + premioSeleccionado.getNombre() + 
                     " | AREA PREMIOS");
                 
                 Salida.log("ENCARGADO", 
-                    "entregó " + premioSeleccionado.getNombre() + 
+                    "entrego " + premioSeleccionado.getNombre() + 
                     " a visitante " + v.getIdVisitante() + 
                     " (Total atendidos: " + visitantesAtendidos + ")");
                 

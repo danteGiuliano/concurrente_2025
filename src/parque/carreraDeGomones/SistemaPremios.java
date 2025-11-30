@@ -26,15 +26,11 @@ public class SistemaPremios {
         this.ticketera = new Ticketera("GOMONES-FICHAS");
         this.mutex = new Semaphore(1, true);
         this.ganadoresAtendidos = 0;
+        this.ticketera.start();
     }
     
-    /**
-     * Inicia el sistema de premios
-     */
-    public void iniciar() {
-        ticketera.start();
-        Salida.log("SISTEMA", "Sistema de Premios activo | CARRERA GOMONES");
-    }
+
+
     
     /**
      * Entrega premio al ganador

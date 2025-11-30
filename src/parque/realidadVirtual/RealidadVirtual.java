@@ -43,8 +43,7 @@ public class RealidadVirtual {
         ticketera.start();
 
         Salida.log("SISTEMA",
-                "Realidad Virtual abierta - V:" + visores +
-                        " M:" + manoplas + " B:" + bases);
+                "Realidad Virtual abierta - V:" + visores +" M:" + manoplas + " B:" + bases +"| REALIDAD VIRTUAl");
     }
 
     /** VISITANTE */

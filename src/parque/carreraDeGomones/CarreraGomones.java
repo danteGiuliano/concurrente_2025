@@ -29,7 +29,6 @@ public class CarreraGomones {
         // Iniciar hilos
         trenInterno.start();
         camioneta.start();
-        sistemaPremios.iniciar();
         
         Salida.log("SISTEMA", "Carrera de Gomones ABIERTA | CARRERA GOMONES");
     }
@@ -72,8 +71,7 @@ public class CarreraGomones {
     
  
     private boolean llegarAlInicio(Visitante v) throws InterruptedException {
-        // 70% bicicleta, 30% tren
-        if (Math.random() < 0.7) {
+        if (Math.random() < 0.5) {
             return standBicicletas.usarBicicleta(v);
         } else {
             return trenInterno.viajar(v);

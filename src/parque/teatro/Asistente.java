@@ -20,7 +20,7 @@ public class Asistente extends Thread {
     
     @Override
     public void run() {
-        Salida.log("ASISTENTE-" + id, "inicia su turno | TEATRO");
+        Salida.log("ASISTENTE TEATRO-" + id, "inicia su turno | TEATRO");
         
         while (activo) {
             try {

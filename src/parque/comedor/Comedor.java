@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Comedor del parque con múltiples mesas.
  * Los visitantes se sientan en mesas de 4 personas.
- * Todos en una mesa empiezan a comer al mismo tiempo cuando la mesa se llena.
+ * Todos en una mesa empiezan a comer al mismo tiempo cuando la mesa se llena
  */
 public class Comedor {
     private final List<Mesa> mesas;
@@ -21,7 +21,7 @@ public class Comedor {
         for (int i = 0; i < cantidadMesas; i++) {
             mesas.add(new Mesa(i));
         }
-        Salida.log("SISTEMA", "Comedor abierto con " + cantidadMesas + " mesas");
+        Salida.log("SISTEMA", "Comedor abierto con " + cantidadMesas + " mesas | COMEDOR");
     }
     
     /**
@@ -37,18 +37,16 @@ public class Comedor {
             return false;
         }
         
-        // Se sentó en una mesa, ahora espera y come
+   
         mesaAsignada.esperarYComer(v);
         
-        // Notificar que la mesa podría estar completa
+   
         mesaAsignada.notificarMesaCompleta();
         
         return true;
     }
     
-    /**
-     * Busca una mesa disponible para el visitante
-     */
+
     private Mesa buscarMesaDisponible(Visitante v) {
         lock.lock();
         try {
@@ -59,7 +57,7 @@ public class Comedor {
                 }
             }
             
-            // No hay mesas disponibles
+         
             return null;
             
         } finally {
@@ -67,9 +65,7 @@ public class Comedor {
         }
     }
     
-    /**
-     * Obtiene estadísticas del comedor
-     */
+
     public int getCantidadMesas() {
         return mesas.size();
     }
