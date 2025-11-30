@@ -62,44 +62,53 @@ public class Parque {
     public void mapa(Visitante v) {
 
         while (Reloj.operativo()) {
-            // this.montaniaRusa(v);
-            // this.autitosChocadores(v);
 
-            // El visitante decide si va al comedor (25% probabilidad)
-            // if (rng.nextInt(100) < 25) {
-            //     this.comedor(v);
-            // }
+            if (this.rng(20)) {
+                this.montaniaRusa(v);
 
-            // El visitante decide si va al teatro (20% probabilidad)
-            // if (rng.nextInt(100) < 20) {
-            //     this.teatro(v);
-            // }
+            }
 
-            // El visitante decide si va a Realidad Virtual (20% probabilidad)
-            // if (rng.nextInt(100) < 20) {
-            //     this.realidadVirtual(v);
-            // }
+            if (this.rng(20)) {
+                this.autitosChocadores(v);
 
-            // El visitante decide si va al área de premios con probabilidad
-            // if (rng.nextInt(100) < 30 && v.getBilletera().getFichas() > 0) {
-            //     this.areaPremios(v);
-            // }
+            }
 
-            if (rng.nextInt(100) < 25) {
+            if (this.rng(20)) {
+                this.comedor(v);
+            }
+
+            if (this.rng(20)) {
+                this.teatro(v);
+            }
+
+            if (this.rng(20)) {
+                this.realidadVirtual(v);
+            }
+
+            if (this.rng(30) && v.getBilletera().getFichas() > 0) {
+                this.areaPremios(v);
+            }
+
+            if (this.rng(25)) {
                 this.carreraGomones(v);
             }
         }
 
         // Antes de irse, intenta canjear fichas restantes
-        // if (v.getBilletera().getFichas() > 0) {
-        //     this.areaPremios(v);
-        // }
+        if (v.getBilletera().getFichas() > 0) {
+            this.areaPremios(v);
+        }
 
         Salida.log(v.getIdVisitante(), "parque cerrado se va a casa | PARQUE ");
     }
 
     public boolean parqueAbierto() {
         return Reloj.operativo();
+    }
+
+    // Propabildiad RNG
+    private boolean rng(int value) {
+        return rng.nextInt(100) < value;
     }
 
     public void montaniaRusa(Visitante v) {
