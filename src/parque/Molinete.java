@@ -49,7 +49,7 @@ public class Molinete {
                 return false;
             }
             contador = contador.add(BigInteger.ONE);
-            v.setPase(contador);
+            v.setTicket(contador);  // ← Ahora solo setea el ticket, NO sobrescribe el ID
             Salida.log(v.getIdVisitante(), "paso por molinete " + id + " ticket N:" + contador + "| PARQUE");
             return true;
         } catch (InterruptedException e) {

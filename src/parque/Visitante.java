@@ -3,26 +3,33 @@ package parque;
 import java.math.BigInteger;
 
 public class Visitante implements Runnable {
-    private BigInteger ID;
+    private final BigInteger ID;  // ← ID permanente del visitante
+    private BigInteger ticketNumero;  // ← Número de ticket del molinete
     private final Parque parque;
     private Billetera billetera = new Billetera(0);
 
-    public Visitante(Parque parque) {
+    public Visitante(BigInteger id, Parque parque) {
+        this.ID = id;
         this.parque = parque;
     }
 
     public BigInteger getIdVisitante() {
-        return this.ID;
+        return this.ID;  // ← Siempre retorna el ID original
     }
 
-    public void setPase(BigInteger pase) {
-        this.ID = pase;
+    public void setTicket(BigInteger ticket) {
+        this.ticketNumero = ticket;
+    }
+
+    public BigInteger getTicketNumero() {
+        return this.ticketNumero;
     }
 
     public Billetera getBilletera() {
         return billetera;
     }
-    public void setBilletera(Billetera b){
+    
+    public void setBilletera(Billetera b) {
         this.billetera = b;
     }
 
@@ -30,7 +37,7 @@ public class Visitante implements Runnable {
     public void run() {
         while (true) {
             try {
-                if ( parque.ingresarParque(this)) {  
+                if (parque.ingresarParque(this)) {  
                     parque.mapa(this);
                 }
                 Thread.sleep(2000);

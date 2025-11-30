@@ -16,7 +16,6 @@ public class AreaPremios {
     
     private final Lock lock;
     private final Condition hayVisitantes;
-    private final Condition premioEntregado;
     
     private final Encargado encargado;
     
@@ -26,7 +25,6 @@ public class AreaPremios {
         
         this.lock = new ReentrantLock(true);
         this.hayVisitantes = lock.newCondition();
-        this.premioEntregado = lock.newCondition();
         
         this.encargado = new Encargado(this);
         this.encargado.start();
@@ -62,26 +60,36 @@ public class AreaPremios {
             
             if (fichasDisponibles == 0) {
                 Salida.log(v.getIdVisitante(), 
-                    "no tiene fichas para canjear | AREA PREMIOS");
+                    "no tiene fichas para canjear, se retira | AREA PREMIOS");
                 return false;
             }
             
-            SolicitudPremio solicitud = new SolicitudPremio(v);
+            // Crear condition ÚNICA para este visitante
+            Condition miCondition = lock.newCondition();
+            SolicitudPremio solicitud = new SolicitudPremio(v, miCondition);
             colaSolicitudes.add(solicitud);
+            
+            Salida.log(v.getIdVisitante(), 
+                "entra en cola de premios (posicion: " + colaSolicitudes.size() + ") | AREA PREMIOS");
+            
+            // Notificar al encargado
+            hayVisitantes.signal();
             
             Salida.log(v.getIdVisitante(), 
                 "espera ser atendido por el encargado | AREA PREMIOS");
             
-            hayVisitantes.signal();
-            
+            // Esperar en MI PROPIA condition variable
             while (!solicitud.atendido) {
-                premioEntregado.await();
+                miCondition.await();
             }
             
             if (solicitud.exitoso && solicitud.premioObtenido != null) {
                 Salida.log(v.getIdVisitante(), 
                     "obtuvo " + solicitud.premioObtenido.getNombre() + 
                     " por " + solicitud.premioObtenido.getCostoFichas() + " fichas | AREA PREMIOS");
+            } else {
+                Salida.log(v.getIdVisitante(), 
+                    "no pudo obtener premio (sin stock o fichas insuficientes) | AREA PREMIOS");
             }
             
             return solicitud.exitoso;
@@ -98,7 +106,13 @@ public class AreaPremios {
                 hayVisitantes.await();
             }
             
-            return colaSolicitudes.poll();
+            SolicitudPremio solicitud = colaSolicitudes.poll();
+            
+            Salida.log("SISTEMA", 
+                "encargado toma solicitud de visitante " + solicitud.visitante.getIdVisitante() + 
+                " | AREA PREMIOS");
+            
+            return solicitud;
             
         } finally {
             lock.unlock();
@@ -126,10 +140,11 @@ public class AreaPremios {
         }
     }
     
-    void notificarEntrega() {
+    void notificarEntrega(SolicitudPremio solicitud) {
         lock.lock();
         try {
-            premioEntregado.signalAll();
+            // Despertar SOLO al visitante específico
+            solicitud.miCondition.signal();
         } finally {
             lock.unlock();
         }
@@ -141,12 +156,14 @@ public class AreaPremios {
     
     static class SolicitudPremio {
         final Visitante visitante;
+        final Condition miCondition;  // ← Condition ÚNICA para este visitante
         boolean atendido = false;
         boolean exitoso = false;
         Premio premioObtenido = null;
         
-        SolicitudPremio(Visitante visitante) {
+        SolicitudPremio(Visitante visitante, Condition condition) {
             this.visitante = visitante;
+            this.miCondition = condition;
         }
     }
 }

@@ -13,9 +13,8 @@ public class Simulacion {
         List<Thread> visitantes = new ArrayList<>();
 
         for (int i = 0; i < cantidad; i++) {
-            Visitante v = new Visitante(parque);
             long uniqueId = idGenerator.incrementAndGet();
-            v.setPase(BigInteger.valueOf(uniqueId));
+            Visitante v = new Visitante(BigInteger.valueOf(uniqueId), parque);
             Thread hilo = new Thread(v, "Visitante-" + uniqueId);
             visitantes.add(hilo);
         }

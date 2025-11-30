@@ -47,14 +47,16 @@ public class Encargado extends Thread {
             
             solicitud.atendido = true;
             solicitud.exitoso = false;
-            areaPremios.notificarEntrega();
+            areaPremios.notificarEntrega(solicitud);
             return;
         }
+        
+        // CRÍTICO: Asignar el premio ANTES de realizar la transacción
+        solicitud.premioObtenido = premioSeleccionado;
         
         if (realizarTransaccion(v, premioSeleccionado)) {
             visitantesAtendidos++;
             solicitud.exitoso = true;
-            solicitud.premioObtenido = premioSeleccionado;
             
             Salida.log("ENCARGADO", 
                 "entrego " + premioSeleccionado.getNombre() + 
@@ -62,6 +64,7 @@ public class Encargado extends Thread {
                 " (Total atendidos: " + visitantesAtendidos + ") | AREA PREMIOS");
         } else {
             solicitud.exitoso = false;
+            solicitud.premioObtenido = null; // Limpiar si falló
             
             Salida.log("ENCARGADO", 
                 "no pudo completar transacción con visitante " + v.getIdVisitante() + 
@@ -69,7 +72,7 @@ public class Encargado extends Thread {
         }
         
         solicitud.atendido = true;
-        areaPremios.notificarEntrega();
+        areaPremios.notificarEntrega(solicitud);
     }
     
     private boolean realizarTransaccion(Visitante v, Premio premio) throws InterruptedException {
