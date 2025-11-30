@@ -16,7 +16,7 @@ public class Encargado extends Thread {
     
     @Override
     public void run() {
-        Salida.log("ENCARGADO", "inicia su turno en el área de premios | AREA PREMIOS");
+        Salida.log("ENCARGADO", "inicia su turno en el area de premios | AREA PREMIOS");
         
         while (true) {
             try {
@@ -54,9 +54,10 @@ public class Encargado extends Thread {
         if (realizarTransaccion(v, premioSeleccionado)) {
             visitantesAtendidos++;
             solicitud.exitoso = true;
+            solicitud.premioObtenido = premioSeleccionado;
             
             Salida.log("ENCARGADO", 
-                "entregó " + premioSeleccionado.getNombre() + 
+                "entrego " + premioSeleccionado.getNombre() + 
                 " a visitante " + v.getIdVisitante() + 
                 " (Total atendidos: " + visitantesAtendidos + ") | AREA PREMIOS");
         } else {
@@ -80,10 +81,6 @@ public class Encargado extends Thread {
         
         premio.decrementarStock();
         Thread.sleep(1000);
-        
-        Salida.log(v.getIdVisitante(), 
-            "recibe " + premio.getNombre() + 
-            " (" + premio.getCostoFichas() + " fichas) | AREA PREMIOS");
         
         return true;
     }

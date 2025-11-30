@@ -31,7 +31,7 @@ public class AreaPremios {
         this.encargado = new Encargado(this);
         this.encargado.start();
         
-        Salida.log("SISTEMA", "Área de Premios abierta | AREA PREMIOS");
+        Salida.log("SISTEMA", "area de Premios abierta | AREA PREMIOS");
     }
     
     private List<Premio> inicializarCatalogo() {
@@ -41,13 +41,13 @@ public class AreaPremios {
         catalogo.add(new Premio("Sticker", 1, 100));
         catalogo.add(new Premio("Gorra", 3, 30));
         catalogo.add(new Premio("Remera", 5, 25));
-        catalogo.add(new Premio("Peluche pequeño", 8, 20));
+        catalogo.add(new Premio("Peluche pequenio", 8, 20));
         catalogo.add(new Premio("Taza", 10, 15));
         catalogo.add(new Premio("Mochila", 12, 10));
         catalogo.add(new Premio("Peluche grande", 15, 8));
         catalogo.add(new Premio("Auriculares", 20, 5));
         catalogo.add(new Premio("Reloj", 25, 3));
-        catalogo.add(new Premio("Consola portátil", 30, 2));
+        catalogo.add(new Premio("Consola portatil", 30, 2));
         
         return catalogo;
     }
@@ -76,6 +76,12 @@ public class AreaPremios {
             
             while (!solicitud.atendido) {
                 premioEntregado.await();
+            }
+            
+            if (solicitud.exitoso && solicitud.premioObtenido != null) {
+                Salida.log(v.getIdVisitante(), 
+                    "obtuvo " + solicitud.premioObtenido.getNombre() + 
+                    " por " + solicitud.premioObtenido.getCostoFichas() + " fichas | AREA PREMIOS");
             }
             
             return solicitud.exitoso;
@@ -137,6 +143,7 @@ public class AreaPremios {
         final Visitante visitante;
         boolean atendido = false;
         boolean exitoso = false;
+        Premio premioObtenido = null;
         
         SolicitudPremio(Visitante visitante) {
             this.visitante = visitante;

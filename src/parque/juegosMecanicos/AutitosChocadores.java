@@ -44,7 +44,7 @@ public class AutitosChocadores {
             Salida.log(v.getIdVisitante(), "espera a que se completen los autos | AUTOS CHOCADORES");
             barrierInicio.await();
             
-            Salida.log(v.getIdVisitante(), "¡Chocando autos! | AUTOS CHOCADORES");
+            Salida.log(v.getIdVisitante(), "chocando autos | AUTOS CHOCADORES");
             Thread.sleep(5000);
             
             Salida.log(v.getIdVisitante(), "termina el juego | AUTOS CHOCADORES");
