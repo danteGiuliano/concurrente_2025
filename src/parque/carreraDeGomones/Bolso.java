@@ -36,7 +36,7 @@ public class Bolso {
     
     @Override
     public String toString() {
-        return "Bolso #" + numero;
+        return "Bolso N:" + numero;
     }
     
     @Override

@@ -48,7 +48,7 @@ public class StandBicicletas {
             return true;
         } else {
             Salida.log(v.getIdVisitante(), 
-                "no hay bicicletas, intentará tren | CARRERA GOMONES");
+                "no hay bicicletas, intentara tren | CARRERA GOMONES");
             return false;
         }
     }

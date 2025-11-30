@@ -50,6 +50,6 @@ public class Gomon {
     
     @Override
     public String toString() {
-        return "Gomón #" + id + " (" + tipo + ")";
+        return "Gomón N" + id + " (" + tipo + ")";
     }
 }

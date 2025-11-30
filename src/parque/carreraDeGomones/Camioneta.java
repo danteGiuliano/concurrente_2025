@@ -88,7 +88,7 @@ public class Camioneta extends Thread {
             
             Salida.log("CAMIONETA", 
                 "entrega " + solicitud.bolso + " en destino " +
-                "(Viaje #" + viajesRealizados + ") | CARRERA GOMONES");
+                "(Viaje N:" + viajesRealizados + ") | CARRERA GOMONES");
             
             // Notificar que el bolso está disponible
             bolsoListo.signalAll();

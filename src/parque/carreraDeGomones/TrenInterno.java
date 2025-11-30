@@ -48,7 +48,7 @@ public class TrenInterno extends Thread {
     private void inicializarBarrier() {
         barrierSalida = new CyclicBarrier(CAPACIDAD_MAXIMA, () -> {
             Salida.log("TREN", "═══════════════════════════════════════");
-            Salida.log("TREN", "  VIAJE #" + (++numeroViaje) + " - TREN COMPLETO");
+            Salida.log("TREN", "  VIAJE N" + (++numeroViaje) + " - TREN COMPLETO");
             Salida.log("TREN", "  Partiendo con " + CAPACIDAD_MAXIMA + " pasajeros");
             Salida.log("TREN", "═══════════════════════════════════════");
         });
@@ -188,7 +188,7 @@ public class TrenInterno extends Thread {
         numeroViaje++;
         
         Salida.log("TREN", 
-            "parte con " + pasajerosAbordo + " pasajeros (timeout) - Viaje #" + 
+            "parte con " + pasajerosAbordo + " pasajeros (timeout) - Viaje N" + 
             numeroViaje + " | CARRERA GOMONES");
         
         // Resetear barrier para próximo grupo

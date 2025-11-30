@@ -85,7 +85,7 @@ public class CarreraGomones {
         
         // Descender por el río
         Salida.log(v.getIdVisitante(), 
-            "desciende por el río en gomón " + gomon.getTipo() + " | CARRERA GOMONES");
+            "desciende por el rio en gomón " + gomon.getTipo() + " | CARRERA GOMONES");
         
         int tiempoDescenso = 5000 + (int)(Math.random() * 3000);
         Thread.sleep(tiempoDescenso);
@@ -95,10 +95,10 @@ public class CarreraGomones {
         
         if (posicion == 1) {
             Salida.log(v.getIdVisitante(), 
-                "¡¡¡GANADOR!!! Primer lugar | CARRERA GOMONES");
+                " GANADOR Primer lugar | CARRERA GOMONES");
         } else {
             Salida.log(v.getIdVisitante(), 
-                "posición #" + posicion + " | CARRERA GOMONES");
+                "posicion N:" + posicion + " | CARRERA GOMONES");
         }
         
         return posicion;

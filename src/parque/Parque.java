@@ -66,9 +66,9 @@ public class Parque {
             // this.autitosChocadores(v);
 
             // El visitante decide si va al comedor (25% probabilidad)
-            if (rng.nextInt(100) < 25) {
-                this.comedor(v);
-            }
+            // if (rng.nextInt(100) < 25) {
+            //     this.comedor(v);
+            // }
 
             // El visitante decide si va al teatro (20% probabilidad)
             // if (rng.nextInt(100) < 20) {
@@ -85,9 +85,9 @@ public class Parque {
             //     this.areaPremios(v);
             // }
 
-            // if (rng.nextInt(100) < 25) {
-            //     this.carreraGomones(v);
-            // }
+            if (rng.nextInt(100) < 25) {
+                this.carreraGomones(v);
+            }
         }
 
         // Antes de irse, intenta canjear fichas restantes

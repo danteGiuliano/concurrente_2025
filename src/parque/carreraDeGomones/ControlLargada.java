@@ -91,7 +91,7 @@ public class ControlLargada {
                 carreraEnCurso = false;
                 
                 Salida.log("SISTEMA", 
-                    "Carrera #" + numeroCarrera + " FINALIZADA | CARRERA GOMONES");
+                    "Carrera N:" + numeroCarrera + " FINALIZADA | CARRERA GOMONES");
             }
         } finally {
             lock.unlock();
