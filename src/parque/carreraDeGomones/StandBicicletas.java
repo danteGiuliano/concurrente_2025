@@ -36,13 +36,11 @@ public class StandBicicletas {
                 "toma bicicleta (" + disponibles + "/" + CANTIDAD_TOTAL + 
                 " restantes) | CARRERA GOMONES");
             
-            // Simular viaje al inicio
             Thread.sleep(2000);
             
             Salida.log(v.getIdVisitante(), 
                 "llega al inicio en bicicleta | CARRERA GOMONES");
             
-            // Devolver bicicleta
             devolverBicicleta(v);
             
             return true;

@@ -19,7 +19,7 @@ public class CarreraGomones {
                           int bolsos, int gomonesParaLargada) {
         
         this.standBicicletas = new StandBicicletas(bicicletas);
-        this.trenInterno = new TrenInterno();
+        this.trenInterno = new TrenInterno(15);
         this.sistemaGomones = new SistemaGomones(gomonesInd, gomonesDobles);
         this.sistemaBolsos = new SistemaBolsos(bolsos);
         this.camioneta = new Camioneta();
@@ -27,7 +27,6 @@ public class CarreraGomones {
         this.sistemaPremios = new SistemaPremios();
         
         // Iniciar hilos
-        trenInterno.start();
         camioneta.start();
         
         Salida.log("SISTEMA", "Carrera de Gomones ABIERTA | CARRERA GOMONES");
@@ -80,10 +79,8 @@ public class CarreraGomones {
     
   
     private int competir(Visitante v, Gomon gomon) throws InterruptedException {
-        // Esperar largada
         controlLargada.esperarLargada(v, gomon);
         
-        // Descender por el río
         Salida.log(v.getIdVisitante(), 
             "desciende por el rio en gomón " + gomon.getTipo() + " | CARRERA GOMONES");
         
