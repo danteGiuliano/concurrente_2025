@@ -51,7 +51,7 @@ public class Encargado extends Thread {
             return;
         }
         
-        // CRÍTICO: Asignar el premio ANTES de realizar la transacción
+    
         solicitud.premioObtenido = premioSeleccionado;
         
         if (realizarTransaccion(v, premioSeleccionado)) {
@@ -64,7 +64,7 @@ public class Encargado extends Thread {
                 " (Total atendidos: " + visitantesAtendidos + ") | AREA PREMIOS");
         } else {
             solicitud.exitoso = false;
-            solicitud.premioObtenido = null; // Limpiar si falló
+            solicitud.premioObtenido = null; // Limpiar si fallo
             
             Salida.log("ENCARGADO", 
                 "no pudo completar transacción con visitante " + v.getIdVisitante() + 

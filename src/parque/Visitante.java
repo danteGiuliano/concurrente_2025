@@ -14,7 +14,7 @@ public class Visitante implements Runnable {
     }
 
     public BigInteger getIdVisitante() {
-        return this.ID;  // ← Siempre retorna el ID original
+        return this.ID;  
     }
 
     public void setTicket(BigInteger ticket) {

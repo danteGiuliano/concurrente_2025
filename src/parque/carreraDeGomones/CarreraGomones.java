@@ -26,7 +26,7 @@ public class CarreraGomones {
         this.controlLargada = new ControlLargada(gomonesParaLargada);
         this.sistemaPremios = new SistemaPremios();
         
-        // Iniciar hilos
+    
         camioneta.start();
         
         Salida.log("SISTEMA", "Carrera de Gomones ABIERTA | CARRERA GOMONES");
@@ -82,7 +82,7 @@ public class CarreraGomones {
         controlLargada.esperarLargada(v, gomon);
         
         Salida.log(v.getIdVisitante(), 
-            "desciende por el rio en gomón " + gomon.getTipo() + " | CARRERA GOMONES");
+            "desciende por el rio en gomon " + gomon.getTipo() + " | CARRERA GOMONES");
         
         int tiempoDescenso = 5000 + (int)(Math.random() * 3000);
         Thread.sleep(tiempoDescenso);
@@ -92,7 +92,7 @@ public class CarreraGomones {
         
         if (posicion == 1) {
             Salida.log(v.getIdVisitante(), 
-                " GANADOR Primer lugar | CARRERA GOMONES");
+                " GANADOR Primer lugar posicion 1 | CARRERA GOMONES");
         } else {
             Salida.log(v.getIdVisitante(), 
                 "posicion N:" + posicion + " | CARRERA GOMONES");
