@@ -51,91 +51,134 @@
     <tbody></tbody>
   </table>
 
-  <script>
-    const fileInput = document.getElementById("fileInput");
-    const threadFilter = document.getElementById("threadFilter");
-    const textSearch = document.getElementById("textSearch");
-    const tbody = document.querySelector("#logTable tbody");
-    let logEntries = [];
+<script>
+  const fileInput = document.getElementById("fileInput");
+  const threadFilter = document.getElementById("threadFilter");
+  const textSearch = document.getElementById("textSearch");
+  const tbody = document.querySelector("#logTable tbody");
 
-    fileInput.addEventListener("change", event => {
-      const file = event.target.files[0];
-      if (!file) return;
+  let logEntries = [];
+  let filteredEntries = [];
 
-      const reader = new FileReader();
-      reader.onload = e => {
-        tbody.innerHTML = "";
-        logEntries = [];
-        threadFilter.innerHTML = '<option value="all">Todos</option>';
+  const ROW_HEIGHT = 28; 
+  const BUFFER = 10;
 
-        // Dividimos por '#', limpiamos y filtramos vacíos
-        const chunks = e.target.result.split("#").map(l => l.trim()).filter(l => l.length > 0);
-        const threadsSet = new Set();
+  // Creamos contenedor para virtual scroll
+  const tableWrapper = document.createElement("div");
+  tableWrapper.style.height = "600px";
+  tableWrapper.style.overflowY = "auto";
+  tableWrapper.style.position = "relative";
 
-        chunks.forEach(line => {
-          const parts = line.split("|").map(p => p.trim());
-          if (parts.length === 4) {
-            logEntries.push({
-              thread: parts[0],
-              action: parts[1],
-              resource: parts[2],
-              time: parts[3]
-            });
-            threadsSet.add(parts[0]);
-          } else if (parts.length === 3) {
-            logEntries.push({
-              thread: parts[0],
-              action: parts[1],
-              resource: "",
-              time: parts[2]
-            });
-            threadsSet.add(parts[0]);
-          }
-        });
+  const originalTable = document.getElementById("logTable");
+  originalTable.parentNode.insertBefore(tableWrapper, originalTable);
+  tableWrapper.appendChild(originalTable);
 
-        // llenar combo de threads ordenados
-        Array.from(threadsSet).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(thread => {
-          const option = document.createElement("option");
-          option.value = thread;
-          option.textContent = thread;
-          threadFilter.appendChild(option);
-        });
+  // capa fantasma que simula altura real
+  const spacer = document.createElement("div");
+  spacer.style.position = "absolute";
+  spacer.style.left = "0";
+  spacer.style.right = "0";
+  spacer.style.top = "0";
+  spacer.style.height = "0";
+  tableWrapper.appendChild(spacer);
 
-        renderTable("all", "");
-      };
-      reader.readAsText(file);
-    });
+  fileInput.addEventListener("change", event => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    threadFilter.addEventListener("change", () => {
-      renderTable(threadFilter.value, textSearch.value.trim());
-    });
-
-    textSearch.addEventListener("input", () => {
-      renderTable(threadFilter.value, textSearch.value.trim());
-    });
-
-    function renderTable(filterThread, searchText) {
+    const reader = new FileReader();
+    reader.onload = e => {
       tbody.innerHTML = "";
-      const search = searchText.toLowerCase();
+      logEntries = [];
+      threadFilter.innerHTML = '<option value="all">Todos</option>';
 
-      logEntries.forEach(entry => {
-        const matchThread = filterThread === "all" || entry.thread === filterThread;
-        const matchText =
-          entry.action.toLowerCase().includes(search) ||
-          entry.resource.toLowerCase().includes(search);
+      const chunks = e.target.result.split("#").map(l => l.trim()).filter(l => l.length > 0);
+      const threadsSet = new Set();
 
-        if (matchThread && matchText) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${entry.thread}</td>
-            <td>${entry.action}</td>
-            <td>${entry.resource || "-"}</td>
-            <td>${entry.time}</td>
-          `;
-          tbody.appendChild(tr);
+      chunks.forEach(line => {
+        const parts = line.split("|").map(p => p.trim());
+        if (parts.length === 4) {
+          logEntries.push({
+            thread: parts[0],
+            action: parts[1],
+            resource: parts[2],
+            time: parts[3]
+          });
+          threadsSet.add(parts[0]);
+        } else if (parts.length === 3) {
+          logEntries.push({
+            thread: parts[0],
+            action: parts[1],
+            resource: "",
+            time: parts[2]
+          });
+          threadsSet.add(parts[0]);
         }
       });
+
+      Array.from(threadsSet).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(thread => {
+        const option = document.createElement("option");
+        option.value = thread;
+        option.textContent = thread;
+        threadFilter.appendChild(option);
+      });
+
+      applyFilters();
+    };
+    reader.readAsText(file);
+  });
+
+  threadFilter.addEventListener("change", applyFilters);
+  textSearch.addEventListener("input", applyFilters);
+
+  function applyFilters() {
+    const filterThread = threadFilter.value;
+    const search = textSearch.value.trim().toLowerCase();
+
+    filteredEntries = logEntries.filter(entry => {
+      const matchThread = filterThread === "all" || entry.thread === filterThread;
+      const matchText =
+        entry.action.toLowerCase().includes(search) ||
+        entry.resource.toLowerCase().includes(search);
+      return matchThread && matchText;
+    });
+
+    spacer.style.height = (filteredEntries.length * ROW_HEIGHT) + "px";
+    renderVisibleRows();
+  }
+
+  tableWrapper.addEventListener("scroll", renderVisibleRows);
+
+  function renderVisibleRows() {
+    const scrollTop = tableWrapper.scrollTop;
+
+    const startIndex = Math.max(Math.floor(scrollTop / ROW_HEIGHT) - BUFFER, 0);
+    const visibleCount = Math.ceil(tableWrapper.clientHeight / ROW_HEIGHT) + BUFFER * 2;
+    const endIndex = Math.min(startIndex + visibleCount, filteredEntries.length);
+
+    const fragment = document.createDocumentFragment();
+
+    tbody.innerHTML = "";
+
+    // Desplazamiento visual
+    tbody.style.transform = `translateY(${startIndex * ROW_HEIGHT}px)`;
+
+    for (let i = startIndex; i < endIndex; i++) {
+      const entry = filteredEntries[i];
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${entry.thread}</td>
+        <td>${entry.action}</td>
+        <td>${entry.resource || "-"}</td>
+        <td>${entry.time}</td>
+      `;
+      fragment.appendChild(tr);
     }
-  </script>
+
+    tbody.appendChild(fragment);
+  }
+</script>
+
 </body>
 </html>
