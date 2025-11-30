@@ -33,8 +33,8 @@ public class Reloj extends Thread {
     @Override
     public void run() {
         while (true) {
-            esperar(apertura);
             esperar(cierre);
+            esperar(apertura);
         }
     }
 

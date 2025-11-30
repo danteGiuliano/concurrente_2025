@@ -85,7 +85,7 @@ public class Parque {
                 this.realidadVirtual(v);
             }
 
-            if (this.rng(30) && v.getBilletera().getFichas() > 0) {
+            if (this.rng(10) && v.getBilletera().getFichas() > 0) {
                 this.areaPremios(v);
             }
 
@@ -94,10 +94,7 @@ public class Parque {
             }
         }
 
-        // Antes de irse, intenta canjear fichas restantes
-        if (v.getBilletera().getFichas() > 0) {
-            this.areaPremios(v);
-        }
+    
 
         Salida.log(v.getIdVisitante(), "parque cerrado se va a casa | PARQUE ");
     }
