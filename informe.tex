@@ -49,9 +49,9 @@
 \rfoot{Página \thepage}
 
 \title{\textbf{Sistema de Simulación de Parque de Diversiones Concurrente}\\
-\large Análisis Arquitectónico y Documentación Técnica}
-\author{Programación Concurrente 2025}
-\date{\today}
+\large Programación Concurrente 2025}
+\author{Dante R. Giuliano | FAI - 2062}
+
 
 \begin{document}
 
@@ -140,7 +140,7 @@ El sistema implementa una \textbf{arquitectura basada en componentes} con los si
 \begin{itemize}
     \item \textbf{Alta cohesión:} Cada componente tiene una responsabilidad única y bien definida.
     \item \textbf{Bajo acoplamiento:} Los componentes interactúan a través de interfaces claras.
-    \item \textbf{Separación de responsabilidades:} La lógica de negocio está separada de los mecanismos de sincronización.
+    \item \textbf{Separación de responsabilidades:} La lógica del dominio está separada de los mecanismos de sincronización.
     \item \textbf{Patrón Productor-Consumidor:} Utilizado en múltiples atracciones.
     \item \textbf{Patrón Coordinador:} El Parque actúa como coordinador central.
 \end{itemize}
@@ -510,6 +510,144 @@ if (carrito.availablePermits() > 0) {
 \end{tikzpicture}
 \caption{Flujo de participación en la Carrera de Gomones}
 \end{figure}
+
+
+\newpage
+\section{Área de Premios: Diseño y Concurrencia}
+
+\subsection{Responsabilidad del Componente}
+
+El \texttt{AreaPremios} funciona como el punto central de canje de fichas por regalos. Es un \textbf{recurso compartido y crítico} que gestiona el catálogo de premios y una cola de solicitudes. Su diseño se enfoca en la \textbf{concurrencia segura} utilizando el patrón \textbf{Productor-Consumidor} de Java.
+
+
+
+\subsection{Diagrama de Clases Simplificado (UML)}
+
+
+El diseño se compone de tres clases principales que interactúan para gestionar la solicitud de premios, más una clase interna para el control de sincronización.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    lifeline/.style={rectangle, draw, rounded corners=6pt, text centered,
+                     minimum width=7em, minimum height=2em},
+    line/.style={dashed, gray},
+    arrow/.style={->, thick},
+    node distance=3cm,
+    scale=0.9, transform shape
+]
+
+% Nodos principales
+\node[lifeline, fill=blue!20] (visitante) {Visitante};
+\node[lifeline, fill=green!20, right=3.5cm of visitante] (area) {AreaPremios};
+\node[lifeline, fill=blue!20, right=3.5cm of area] (encargado) {Encargado};
+
+% Líneas verticales
+\draw[line] (visitante.south) -- ++(0,-6.5);
+\draw[line] (area.south) -- ++(0,-6.5);
+\draw[line] (encargado.south) -- ++(0,-6.5);
+
+% 1. Visitante solicita premio
+\draw[arrow] ([yshift=-0.5cm]visitante.south) --
+    node[above]{solicitarPremio()} ([yshift=-0.5cm]area.south);
+
+% 2. AreaPremios obtiene un premio (antes de crear solicitud)
+\draw[arrow] ([yshift=-1.5cm]area.south) --
+    node[above]{obtenerSolicitud()} ([yshift=-1.5cm]area.south -| encargado);
+
+
+
+% 4. Encargado obtiene solicitud del área
+\draw[arrow] ([yshift=-3.8cm]encargado.south) --
+    node[above]{buscarPremio()} ([yshift=-3.8cm]area.south);
+
+% 5. Encargado pide al área buscar un premio
+\draw[arrow] ([yshift=-4.8cm]encargado.south) --
+    node[above]{entregarPremio()} ([yshift=-4.8cm]area.south);
+
+% 5. Visitante obtiene premio
+\draw[arrow] ([yshift=-6cm]area.south) --
+    node[above]{obtienePremio()} ([yshift=-6cm]visitante.south);
+
+\end{tikzpicture}
+\caption{Diagrama de Interacción Productor–Recurso–Consumidor}
+\end{figure}
+
+
+
+\subsection{Catálogo Inicial de Premios}
+
+La lógica de dominio del encargado busca siempre el premio de \textbf{mayor costo} que el visitante pueda pagar y que \textbf{tenga stock} (Política de Priorización de Gasto).
+
+\begin{table}[H]
+    \centering
+    \caption{Catálogo de Premios Inicial}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Nombre del Premio} & \textbf{Costo (Fichas)} & \textbf{Stock Inicial} \\
+        \hline
+        Llavero & 1 & 50 \\
+        Sticker & 1 & 100 \\
+        Gorra & 3 & 30 \\
+        Remera & 5 & 25 \\
+        Peluche pequeño & 8 & 20 \\
+        Taza & 10 & 15 \\
+        Mochila & 12 & 10 \\
+        Peluche grande & 15 & 8 \\
+        Auriculares & 20 & 5 \\
+        Reloj & 25 & 3 \\
+        Consola portátil & 30 & 2 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Modelo de Concurrencia y Sincronización}
+
+El \texttt{AreaPremios} implementa el patrón **Productor-Consumidor** utilizando \texttt{ReentrantLock} y \texttt{Condition}s.
+
+\begin{enumerate}
+    \item \textbf{\texttt{ReentrantLock}}: Provee \textbf{exclusión mutua} con \texttt{fairness}.
+    \item \textbf{\texttt{Condition hayVisitantes}}: Condición global para el \texttt{Encargado} (consumidor).
+    \item \textbf{\texttt{Condition miCondition}}: Condición \textbf{única por \texttt{Visitante}} (productor), usada para el despertar preciso.
+\end{enumerate}
+
+
+
+\subsection{Lógica de programa}
+
+\paragraph{Método \texttt{AreaPremios.buscarMejorPremio}}
+Este método implementa la **Política de Priorización de Gasto**, asegurando que el visitante siempre obtenga el premio de mayor valor que pueda pagar, si hay stock.
+
+\begin{lstlisting}[language=Java, caption=AreaPremios.buscarMejorPremio - Lógica de Priorización]
+Premio buscarMejorPremio(int fichasDisponibles) {
+    lock.lock();
+    try {
+        Premio mejorPremio = null;
+        // 1. Itera sobre el catálogo
+        for (Premio premio : catalogoPremios) {
+            // 2. Verifica Stock y Costo
+            if (premio.hayStock() && premio.getCostoFichas() <= fichasDisponibles) {
+                // 3. Prioriza el MAYOR costo
+                if (mejorPremio == null || 
+                    premio.getCostoFichas() > mejorPremio.getCostoFichas()) {
+                    mejorPremio = premio;
+                }
+            }
+        }
+        return mejorPremio;
+    } finally {
+        lock.unlock();
+    }
+}
+\end{lstlisting}
+
+\newpage
+\section{Apéndice y Conclusiones}
+% Espacio de cierre para evitar conflictos de buffer con los entornos complejos.
+\vspace{5cm}
+\noindent Con esto concluye la documentación de los componentes de concurrencia del parque.
+
+
 
 \end{document}
 

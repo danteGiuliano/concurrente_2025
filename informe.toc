@@ -24,3 +24,11 @@
 \contentsline {section}{\numberline {5}Atracciones Complejas}{13}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Carrera de Gomones}{13}{subsection.5.1}%
 \contentsline {subsubsection}{\numberline {5.1.1}Flujo Completo de Participación}{14}{subsubsection.5.1.1}%
+\contentsline {section}{\numberline {6}Área de Premios: Diseño y Concurrencia}{15}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Responsabilidad del Componente}{15}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Diagrama de Clases Simplificado (UML)}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Catálogo Inicial de Premios}{15}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Modelo de Concurrencia y Sincronización}{16}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Lógica de programa}{16}{subsection.6.5}%
+\contentsline {paragraph}{Método \texttt {AreaPremios.buscarMejorPremio}}{16}{section*.2}%
+\contentsline {section}{\numberline {7}Apéndice y Conclusiones}{17}{section.7}%
