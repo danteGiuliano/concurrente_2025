@@ -61,9 +61,6 @@
 \tableofcontents
 \newpage
 
-\section{Resumen Ejecutivo}
-
-Este documento presenta un análisis exhaustivo del sistema de simulación de un parque de diversiones implementado en Java utilizando programación concurrente. El sistema modela la interacción de múltiples visitantes con diversas atracciones, empleando mecanismos de sincronización avanzados para garantizar la correcta ejecución concurrente.
 
 \subsection{Objetivos del Sistema}
 \begin{itemize}
@@ -642,19 +639,161 @@ Premio buscarMejorPremio(int fichasDisponibles) {
 \end{lstlisting}
 
 \newpage
-\section{Comedor }
+\section{Comedor}
+\label{sec:comedor}
 
-\vspace{5cm}
+\subsection{Descripción General}
+
+El comedor contiene un conjunto fijo de mesas. Cada visitante que desea almorzar solicita una mesa libre; si no hay mesas disponibles, el visitante espera. Una vez que una mesa alcanza su capacidad máxima, todos los visitantes de la mesa comienzan a comer. Cuando todos terminan, la mesa vuelve a quedar disponible y el comedor despierta a los visitantes que estaban esperando lugar.
+
+El sistema garantiza:
+\begin{itemize}
+    \item Exclusión mutua en el acceso a las mesas.
+    \item Evitar deadlocks gracias al orden estricto de adquisición de locks.
+    \item Despertar eficiente de hilos bloqueados.
+\end{itemize}
+
+\subsection{Clases Principales}
+
+\subsubsection*{Comedor}
+\begin{itemize}
+    \item Mantiene la lista de mesas.
+    \item Gestiona el lock global que controla el acceso a la búsqueda de mesas disponibles.
+    \item Contiene la condición \texttt{hayLugar}, usada para suspender visitantes cuando no existen mesas disponibles.
+    \item Orquesta todo el flujo de almuerzo.
+\end{itemize}
+
+\subsubsection*{Mesa}
+\begin{itemize}
+    \item Cada mesa tiene su propio lock para gestionar a sus visitantes.
+    \item Usa la condición \texttt{mesaCompleta} para bloquear a los visitantes hasta que la mesa llegue a capacidad máxima.
+    \item Controla el estado interno: visitantes sentados, bandera de ``comiendo'', y notificación al comedor cuando la mesa queda libre.
+\end{itemize}
+
+
+\end{sequencediagram}
+\caption{Flujo de interacción entre visitante, comedor y mesa}
+\end{figure}
+
+\subsection{Flujo de Ejecución Detallado}
+
+\subsubsection*{1. Llegada del visitante}
+\begin{enumerate}
+    \item El visitante llama a \texttt{almorzar()}.
+    \item El comedor intenta asignarle una mesa.
+\end{enumerate}
+
+\subsubsection*{2. Búsqueda de una mesa disponible}
+\begin{itemize}
+    \item El comedor toma su lock global.
+    \item Itera sobre todas las mesas.
+    \item Si una mesa está disponible y acepta al visitante con \texttt{intentarSentarse()}, el visitante es asignado.
+    \item Si no existe ninguna mesa disponible, el visitante espera en la condición \texttt{hayLugar}.
+\end{itemize}
+
+\subsubsection*{3. Espera hasta completar la mesa}
+\begin{itemize}
+    \item Cada visitante llama \texttt{esperarYComer()} en su mesa asignada.
+    \item Se bloquea en \texttt{mesaCompleta.await()} hasta que la mesa alcance su capacidad.
+\end{itemize}
+
+\subsubsection*{4. Inicio del almuerzo}
+\begin{itemize}
+    \item El primer visitante que detecta que la mesa está completa activa el estado \texttt{comiendo = true}.
+    \item Se despierta a todos los visitantes de la mesa.
+\end{itemize}
+
+\subsubsection*{5. Finalización y liberación}
+\begin{itemize}
+    \item Cada visitante termina de comer y decrementa el contador de ocupación de la mesa.
+    \item El último en abandonar la mesa la marca como libre.
+    \item Se notifica al comedor mediante \texttt{notificarLugarDisponible()} para despertar visitantes en espera.
+\end{itemize}
+
+\subsection{Mecanismos de Concurrencia Utilizados}
+
+\subsubsection*{Locks y Bloqueos}
+\begin{itemize}
+    \item Se emplea un \texttt{ReentrantLock} por mesa.
+    \item Existe un lock global en el comedor para controlar asignaciones.
+\end{itemize}
+
+\subsubsection*{Condiciones}
+\begin{itemize}
+    \item \texttt{hayLugar}: usada por visitantes cuando no hay mesas disponibles.
+    \item \texttt{mesaCompleta}: usada por las mesas para esperar a que la capacidad se complete.
+\end{itemize}
+
+\subsubsection*{Prevención de Deadlocks}
+\begin{itemize}
+    \item Nunca se toma el lock de \texttt{Comedor} desde dentro del lock de una \texttt{Mesa}.
+    \item La notificación al comedor siempre se hace \textbf{fuera} del bloqueo de la mesa.
+\end{itemize}
+
+
 
 \newpage
 \section{Teatro }
-% Espacio de cierre para evitar conflictos de buffer con los entornos complejos.
-\vspace{5cm}
+\subsection{Descripción General}
+
+El módulo \textbf{Teatro} modela un sistema concurrente donde múltiples visitantes intentan acceder a una sala y varios asistentes se encargan de formar grupos de ingreso. El teatro funciona por tandas: cada tanda consta de la formación de 4 grupos de 5 personas. Una vez formados los grupos, comienza el espectáculo; durante este tiempo nadie puede entrar.
+
+Se emplean hilos tanto para los asistentes como para los visitantes, y se utiliza un mecanismo de exclusión mutua mediante \texttt{ReentrantLock} y varias condiciones para coordinar estados y puntos de sincronización.
+
+\subsection{Clases Principales}
+
+\begin{itemize}
+    \item \textbf{Teatro}: administra la cola de visitantes, los grupos, el inicio y fin del espectáculo, y coordina toda la sincronización.
+    \item \textbf{Asistente}: hilo encargado de formar grupos siempre que haya suficientes visitantes y que el espectáculo no haya iniciado.
+    \item \textbf{Visitante}: hilo que intenta entrar al teatro, espera ser habilitado por un asistente y participa del flujo completo del espectáculo.
+\end{itemize}
+
+
+
+\subsection{Flujo del Sistema}
+
+\subsubsection{Visitante}
+\begin{enumerate}
+    \item Intenta entrar; si hay espectáculo en curso, se rechaza.
+    \item Se encola en el lobby.
+    \item Espera a ser habilitado por un asistente.
+    \item Una vez habilitado, se sienta y espera el inicio del espectáculo.
+    \item Disfruta el espectáculo.
+    \item Espera el fin y se retira.
+\end{enumerate}
+
+\subsubsection{Asistente}
+\begin{enumerate}
+    \item Espera que haya visitantes en cola.
+    \item Forma grupos de 5 personas.
+    \item Cuando se formaron 4 grupos, inicia el espectáculo.
+    \item Tras 10 segundos, finaliza el espectáculo.
+\end{enumerate}
+
+
+\subsection{Mecanismos de Sincronización Utilizados}
+
+\begin{itemize}
+    \item \textbf{ReentrantLock}: asegura exclusión mutua en toda operación crítica del teatro.
+    \item \textbf{Condition hayVisitantes}: usada por los asistentes para esperar a que haya suficientes visitantes en la cola.
+    \item \textbf{Condition visitantesLiberados}: los visitantes esperan aquí hasta ser seleccionados para un grupo.
+    \item \textbf{Condition inicioEspectaculo}: los visitantes esperan hasta que se dé inicio oficial.
+    \item \textbf{Condition finEspectaculo}: los visitantes esperan la finalización para retirarse.
+\end{itemize}
+
+\subsection{Estados del Teatro}
+
+\begin{itemize}
+    \item \textbf{esperando\_visitantes}: no hay suficientes personas para formar grupo.
+    \item \textbf{formando\_grupos}: asistentes asignando grupos hasta llegar al máximo.
+    \item \textbf{espectaculo\_activo}: espectáculo en curso, nadie entra ni se forman grupos.
+    \item \textbf{finalizado}: se limpian grupos y se permite una nueva tanda.
+\end{itemize}
+
+
 
 \newpage
 \section{Realidad Virtual }
-% Espacio de cierre para evitar conflictos de buffer con los entornos complejos.
-\vspace{5cm}
 
 
 

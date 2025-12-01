@@ -135,18 +135,16 @@ public class Teatro {
     // ================================
     //     INICIAR ESPECTÁCULO
     // ================================
-    private void iniciarEspectaculo(int asistente) {
+    private void iniciarEspectaculo(int asistente) throws InterruptedException {
         espectaculoActivo = true;
 
         Salida.log("ASISTENTE-" + asistente, "inicia el espectáculo | TEATRO");
         inicioEspectaculo.signalAll();
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(10000);
+              Thread.sleep(10000);
                 finalizarEspectaculo(asistente);
-            } catch (InterruptedException ignored) { }
-        }).start();
+
+  
     }
 
 

@@ -31,8 +31,5 @@ public class Asistente extends Thread {
         Salida.log("ASISTENTE-" + id, "termina su turno | TEATRO");
     }
 
-    public void detener() {
-        activo = false;
-        interrupt();
-    }
+ 
 }
