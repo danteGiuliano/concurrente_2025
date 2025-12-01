@@ -1,0 +1,509 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{fancyhdr}
+
+\geometry{margin=2.5cm}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+% Configuración de colores
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Estilo para código
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Sistema de Parque Concurrente}
+\lhead{Programación Concurrente}
+\rfoot{Página \thepage}
+
+\title{\textbf{Sistema de Simulación de Parque de Diversiones Concurrente}\\
+\large Análisis Arquitectónico y Documentación Técnica}
+\author{Programación Concurrente 2025}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Resumen Ejecutivo}
+
+Este documento presenta un análisis exhaustivo del sistema de simulación de un parque de diversiones implementado en Java utilizando programación concurrente. El sistema modela la interacción de múltiples visitantes con diversas atracciones, empleando mecanismos de sincronización avanzados para garantizar la correcta ejecución concurrente.
+
+\subsection{Objetivos del Sistema}
+\begin{itemize}
+    \item Simular el funcionamiento concurrente de un parque de diversiones.
+    \item Gestionar el acceso controlado a recursos compartidos (atracciones).
+    \item Prevenir condiciones de carrera y deadlocks.
+    \item Implementar políticas de fairness en el acceso a recursos.
+    \item Generar logs detallados para análisis de comportamiento.
+\end{itemize}
+
+\subsection{Tecnologías Utilizadas}
+\begin{itemize}
+    \item \textbf{Lenguaje:} Java 11+
+    \item \textbf{Mecanismos de Sincronización:} Semaphores, Locks, Conditions, CyclicBarrier, Exchanger
+    \item \textbf{Estructuras de Datos Concurrentes:} BlockingQueue, AtomicInteger, AtomicLong
+    \item \textbf{Visualización:} HTML/JavaScript para análisis de logs
+\end{itemize}
+
+\newpage
+
+\section{Arquitectura General del Sistema}
+
+\subsection{Diagrama de Arquitectura de Alto Nivel}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2cm,
+    block/.style={rectangle, draw, fill=blue!20, text width=8em, text centered, rounded corners, minimum height=3em},
+    attraction/.style={rectangle, draw, fill=green!20, text width=9em, text centered, rounded corners, minimum height=2.5em},
+    system/.style={rectangle, draw, fill=red!20, text width=6em, text centered, rounded corners, minimum height=2.5em}
+]
+
+\node[block, fill=yellow!30, text width=9em, minimum height=4em] (parque) {\textbf{PARQUE}\\(Coordinador Central)};
+\node[system, above left=1.5cm and 3cm of parque] (reloj) {Reloj};
+\node[system, above=1.5cm of parque] (molinete) {Molinetes};
+\node[system, above right=1.5cm and 3cm of parque] (ticketera) {Ticketeras};
+
+\node[attraction, below left=2cm and 4cm of parque] (montana) {Montaña\\Rusa};
+\node[attraction, below=0.5cm of montana] (autitos) {Autitos\\Chocadores};
+\node[attraction, below=0.5cm of autitos] (teatro) {Teatro};
+
+\node[attraction, below right=2cm and 4cm of parque] (rv) {Realidad\\Virtual};
+\node[attraction, below=0.5cm of rv] (gomones) {Carrera de\\Gomones};
+\node[attraction, below=0.5cm of gomones] (comedor) {Comedor};
+
+\node[attraction, below=2.5cm of parque] (premios) {Área de\\Premios};
+
+\node[block, fill=cyan!20, above=3cm of parque] (visitante) {\textbf{Visitantes}\\(300 hilos)};
+
+\draw[->, thick] (visitante) -- (reloj);
+\draw[->, thick] (visitante) -- (molinete);
+\draw[->, thick] (molinete) -- (parque);
+\draw[->, thick] (parque) -- (montana);
+\draw[->, thick] (parque) -- (autitos);
+\draw[->, thick] (parque) -- (teatro);
+\draw[->, thick] (parque) -- (rv);
+\draw[->, thick] (parque) -- (gomones);
+\draw[->, thick] (parque) -- (comedor);
+\draw[->, thick] (parque) -- (premios);
+\draw[->, thick, dashed] (montana) -- (ticketera);
+\draw[->, thick, dashed] (autitos) -- (ticketera);
+\draw[->, thick, dashed] (rv) -- (ticketera);
+\draw[->, thick, dashed] (gomones) -- (ticketera);
+
+\end{tikzpicture}
+\caption{Arquitectura General del Sistema}
+\end{figure}
+
+\subsection{Patrón Arquitectónico}
+
+El sistema implementa una \textbf{arquitectura basada en componentes} con los siguientes principios:
+
+\begin{itemize}
+    \item \textbf{Alta cohesión:} Cada componente tiene una responsabilidad única y bien definida.
+    \item \textbf{Bajo acoplamiento:} Los componentes interactúan a través de interfaces claras.
+    \item \textbf{Separación de responsabilidades:} La lógica de negocio está separada de los mecanismos de sincronización.
+    \item \textbf{Patrón Productor-Consumidor:} Utilizado en múltiples atracciones.
+    \item \textbf{Patrón Coordinador:} El Parque actúa como coordinador central.
+\end{itemize}
+
+\newpage
+
+\section{Componentes Principales}
+
+\subsection{Main y Simulación}
+
+\subsubsection{Main.java}
+
+\textbf{Responsabilidad:} Punto de entrada del sistema. Inicializa y configura la simulación.
+
+\textbf{Parámetros de configuración:}
+\begin{itemize}
+    \item \texttt{APERTURA}: Tiempo en milisegundos que el parque permanece abierto (12000 ms).
+    \item \texttt{CIERRE}: Tiempo en milisegundos que el parque permanece cerrado (6000 ms).
+    \item \texttt{VISITANTES}: Cantidad de hilos de visitantes a crear (300).
+    \item \texttt{MOLINETES}: Cantidad de molinetes de entrada (3).
+\end{itemize}
+
+\textbf{Flujo de ejecución:}
+\begin{enumerate}
+    \item Activa/desactiva generación de logs.
+    \item Inicia el hilo del Reloj.
+    \item Crea la instancia del Parque.
+    \item Genera los visitantes mediante Simulación.
+    \item Inicia todos los hilos de visitantes.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm]
+\node (start) [draw, rounded corners] {Inicio};
+\node (config) [draw, below of=start] {Configuración de parámetros};
+\node (reloj) [draw, below of=config] {Iniciar Reloj};
+\node (parque) [draw, below of=reloj] {Crear Parque};
+\node (visitantes) [draw, below of=parque] {Crear 300 Visitantes};
+\node (start_threads) [draw, below of=visitantes] {Iniciar todos los hilos};
+
+\draw[->] (start) -- (config);
+\draw[->] (config) -- (reloj);
+\draw[->] (reloj) -- (parque);
+\draw[->] (parque) -- (visitantes);
+\draw[->] (visitantes) -- (start_threads);
+\end{tikzpicture}
+\caption{Flujo de inicialización del sistema}
+\end{figure}
+
+\subsubsection{Simulacion.java}
+
+\textbf{Responsabilidad:} Fábrica para creación de visitantes con IDs únicos.
+
+\textbf{Características:}
+\begin{itemize}
+    \item Utiliza \texttt{AtomicLong} para generar IDs thread-safe.
+    \item Crea instancias de \texttt{Visitante} con \texttt{BigInteger} como identificador.
+    \item Retorna lista de hilos configurados pero no iniciados.
+\end{itemize}
+
+\textbf{Mecanismo de sincronización:}
+\begin{lstlisting}[language=Java]
+private static final AtomicLong idGenerator = new AtomicLong(0);
+long uniqueId = idGenerator.incrementAndGet();
+\end{lstlisting}
+
+\newpage
+
+\subsection{Sistema de Control Temporal}
+
+\subsubsection{Reloj.java}
+
+\textbf{Responsabilidad:} Gestionar ciclos de apertura/cierre del parque.
+
+\textbf{Diagrama de estados:}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=3cm]
+\node[state, fill=red!20] (cerrado) {CERRADO};
+\node[state, fill=green!20, right of=cerrado] (abierto) {ABIERTO};
+
+\draw[->] (cerrado) edge[bend left] node[above] {sleep(CIERRE)} (abierto);
+\draw[->] (abierto) edge[bend left] node[below] {sleep(APERTURA)} (cerrado);
+\end{tikzpicture}
+\caption{Estados del Reloj}
+\end{figure}
+
+\textbf{Características técnicas:}
+\begin{itemize}
+    \item Variable estática \texttt{abierto}: Estado global accesible desde cualquier componente.
+    \item Hilo daemon que corre continuamente.
+    \item Método estático \texttt{operativo()}: Consulta no bloqueante del estado.
+    \item Genera logs en cada cambio de estado.
+\end{itemize}
+
+\textbf{Casos de uso:}
+\begin{itemize}
+    \item Molinetes verifican el estado antes de permitir ingreso.
+    \item Visitantes consultan para saber si pueden continuar en atracciones.
+    \item Atracciones pueden rechazar nuevos ingresos si el parque está cerrado.
+\end{itemize}
+
+\newpage
+
+\subsection{Sistema de Ingreso}
+
+\subsubsection{Molinete.java}
+
+\textbf{Responsabilidad:} Controlar ingreso de visitantes al parque con exclusión mutua.
+
+\textbf{Mecanismos de sincronización:}
+\begin{itemize}
+    \item \textbf{Semaphore(1, true):} Garantiza exclusión mutua con fairness.
+    \item \textbf{BigInteger contador:} Generador de tickets protegido por la sección crítica.
+    \item \textbf{Bloque finally:} Asegura liberación del semáforo incluso con excepciones.
+\end{itemize}
+
+\textbf{Prevención de condiciones de carrera:}
+\begin{lstlisting}[language=Java]
+// Double-check del estado del parque
+if (!Reloj.operativo()) return false;
+try {
+    semaforo.acquire();
+    // Verificar nuevamente dentro de la sección crítica
+    if (!Reloj.operativo()) return false;
+    // ...
+} finally {
+    semaforo.release();
+}
+\end{lstlisting}
+
+\subsubsection{Parque.java}
+
+\textbf{Responsabilidad:} Coordinador central y fachada del sistema.
+
+\textbf{Recursos gestionados:}
+\begin{itemize}
+    \item Lista de molinetes.
+    \item Semáforo de entrada (\texttt{entradaParque}).
+    \item Instancias de todas las atracciones.
+    \item Generador de números aleatorios para decisiones probabilísticas.
+\end{itemize}
+
+\textbf{Método mapa():} Bucle principal del visitante
+
+\begin{lstlisting}[language=Java]
+while (Reloj.operativo()) {
+    if (rng(20)) montaniaRusa(v);
+    if (rng(20)) autitosChocadores(v);
+    if (rng(20)) comedor(v);
+    if (rng(20)) teatro(v);
+    if (rng(25)) carreraGomones(v);
+    // ... etc
+}
+\end{lstlisting}
+
+\textbf{Probabilidades de visita:}
+\begin{itemize}
+    \item 20\% - Montaña Rusa
+    \item 20\% - Autitos Chocadores
+    \item 20\% - Comedor
+    \item 20\% - Teatro
+    \item 20\% - Realidad Virtual
+    \item 10\% - Área de Premios (requiere fichas)
+    \item 25\% - Carrera de Gomones
+\end{itemize}
+
+\newpage
+
+\subsection{Visitante y Sistema de Fichas}
+
+\subsubsection{Visitante.java}
+
+\textbf{Responsabilidad:} Representar un agente concurrente que navega por el parque.
+
+\textbf{Atributos:}
+\begin{itemize}
+    \item \texttt{ID}: BigInteger - Identificador único inmutable.
+    \item \texttt{ticketNumero}: BigInteger - Ticket asignado por el molinete.
+    \item \texttt{parque}: Referencia al coordinador central.
+    \item \texttt{billetera}: Sistema de fichas del visitante.
+\end{itemize}
+
+\subsubsection{Billetera.java}
+
+\textbf{Responsabilidad:} Gestionar fichas del visitante.
+
+\textbf{Operaciones:}
+\begin{itemize}
+    \item \texttt{cargarFichas(int)}: Incrementa fichas (acceso controlado por el caller).
+    \item \texttt{quitarFichas(int)}: Decrementa si hay suficientes.
+    \item \texttt{getFichas()}: Consulta saldo actual.
+\end{itemize}
+
+\textbf{Nota importante:} La sincronización no está en esta clase, sino en los puntos de intercambio (Ticketera y Área de Premios).
+
+\subsubsection{Ticketera.java}
+
+\textbf{Responsabilidad:} Hilo que intercambia billeteras para cargar/descontar fichas.
+
+\textbf{Mecanismo: Exchanger Pattern}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=3cm]
+\node[draw, rectangle] (visitante) {Visitante};
+\node[draw, rectangle, right of=visitante] (ticketera) {Ticketera};
+
+\draw[<->] (visitante) -- node[above] {exchange(billetera)} node[below] {exchange(billetera actualizada)} (ticketera);
+\end{tikzpicture}
+\caption{Intercambio sincronizado con Exchanger}
+\end{figure}
+
+\textbf{Tipos de fichas:}
+\begin{itemize}
+    \item MR-FICHAS: 3 fichas (Montaña Rusa)
+    \item AC-FICHAS: 2 fichas (Autitos Chocadores)
+    \item AI-FICHAS: 1 ficha (Genérico)
+    \item RV-FICHAS, GOMONES-FICHAS: valores por defecto
+\end{itemize}
+
+\textbf{Parámetros:}
+\begin{itemize}
+    \item \texttt{suma}: true = entregar fichas, false = descontar.
+    \item \texttt{monto}: cantidad fija (-1 para usar \texttt{valorFicha()}).
+\end{itemize}
+
+\newpage
+
+\section{Atracciones Mecánicas}
+
+\subsection{Montaña Rusa}
+
+\textbf{Archivo:} \texttt{parque/juegosMecanicos/MontaniaRusa.java}
+
+\textbf{Responsabilidad:} Atracción con capacidad limitada, cola de espera y sistema de viajes por tandas.
+
+\textbf{Parámetros de configuración:}
+\begin{itemize}
+    \item CAPACIDAD\_COLA: 10 visitantes.
+    \item CAPACIDAD\_VIAJE: 5 visitantes por carrito.
+\end{itemize}
+
+\textbf{Mecanismos de sincronización:}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Mecanismo} & \textbf{Capacidad} & \textbf{Propósito} \\
+\hline
+BlockingQueue & 10 & Cola de espera FIFO con bloqueo \\
+\hline
+Semaphore (carrito) & 5, fair & Control de acceso al carrito \\
+\hline
+Semaphore (barrier) & 0 & Barrera para sincronizar inicio de viaje \\
+\hline
+Semaphore (mutex) & 1, fair & Exclusión mutua en obtención de fichas \\
+\hline
+Exchanger & - & Intercambio de billetera con Ticketera \\
+\hline
+\end{tabular}
+\caption{Mecanismos de sincronización en Montaña Rusa}
+\end{table}
+
+\textbf{Algoritmo de barrera manual:}
+\begin{lstlisting}[language=Java]
+if (carrito.availablePermits() > 0) {
+    // No soy el último, espero
+    barrier.acquire();
+} else {
+    // Soy el último, hago el viaje
+    Thread.sleep(5000);
+    // Despierto a los demás
+    barrier.release(CAPACIDAD_VIAJE - 1);
+    // Reinicio el carrito
+    carrito.release(CAPACIDAD_VIAJE);
+}
+\end{lstlisting}
+
+\subsection{Autitos Chocadores}
+
+\textbf{Archivo:} \texttt{parque/juegosMecanicos/AutitosChocadores.java}
+
+\textbf{Responsabilidad:} Atracción con capacidad total fija y sincronización mediante CyclicBarrier.
+
+\textbf{Configuración:}
+\begin{itemize}
+    \item PERSONAS\_POR\_AUTO: 2.
+    \item Cantidad de autos: configurable al crear la instancia.
+    \item CAPACIDAD\_TOTAL: PERSONAS\_POR\_AUTO * cantidadAutos.
+\end{itemize}
+
+\textbf{Mecanismos de sincronización:}
+\begin{itemize}
+    \item \textbf{Semaphore autosDisponibles}: Control de capacidad.
+    \item \textbf{CyclicBarrier}: Sincroniza inicio cuando todos los lugares están ocupados.
+    \item \textbf{Semaphore mutex(1)}: Protege intercambio con Ticketera.
+\end{itemize}
+
+\newpage
+
+\section{Atracciones Complejas}
+
+\subsection{Carrera de Gomones}
+
+\textbf{Responsabilidad:} Atracción multi-etapa con múltiples recursos y coordinación compleja.
+
+\textbf{Componentes del sistema:}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2cm,
+    component/.style={rectangle, draw, fill=green!20, text width=8em, text centered, minimum height=2.5em}
+]
+
+\node[component] (carrera) {CarreraGomones};
+\node[component, below left=1.5cm and 3cm of carrera] (bici) {StandBicicletas};
+\node[component, below=1cm of bici] (tren) {TrenInterno};
+\node[component, below right=1.5cm and 3cm of carrera] (gomones) {SistemaGomones};
+\node[component, below=1cm of gomones] (bolsos) {SistemaBolsos};
+\node[component, below=2cm of carrera] (camioneta) {Camioneta};
+\node[component, below=1cm of camioneta] (control) {ControlLargada};
+\node[component, below=1cm of control] (premios) {SistemaPremios};
+
+\draw[->] (carrera) -- (bici);
+\draw[->] (carrera) -- (tren);
+\draw[->] (carrera) -- (gomones);
+\draw[->] (carrera) -- (bolsos);
+\draw[->] (carrera) -- (camioneta);
+\draw[->] (carrera) -- (control);
+\draw[->] (carrera) -- (premios);
+
+\end{tikzpicture}
+\caption{Arquitectura de Carrera de Gomones}
+\end{figure}
+
+\subsubsection{Flujo Completo de Participación}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    action/.style={rectangle, draw, fill=blue!20, text width=10em, text centered, minimum height=2em}
+]
+
+\node[action] (1) {1. Llegar al inicio (Bici/Tren)};
+\node[action, below of=1] (2) {2. Obtener bolso con llave};
+\node[action, below of=2] (3) {3. Entregar bolso a camioneta};
+\node[action, below of=3] (4) {4. Obtener gomón (Individual/Doble)};
+\node[action, below of=4] (5) {5. Esperar largada (N gomones)};
+\node[action, below of=5] (6) {6. Competir (descenso)};
+\node[action, below of=6] (7) {7. Registrar llegada};
+\node[action, below of=7] (8) {8. Retirar bolso del destino};
+\node[action, below of=8] (9) {9. Devolver bolso};
+\node[action, below of=9] (10) {10. Premio si ganó};
+
+\end{tikzpicture}
+\caption{Flujo de participación en la Carrera de Gomones}
+\end{figure}
+
+\end{document}
+
