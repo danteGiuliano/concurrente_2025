@@ -25,7 +25,7 @@ public class AutitosChocadores {
         this.ticketera.start();
         
         this.barrierInicio = new CyclicBarrier(CAPACIDAD_TOTAL, () -> {
-            Salida.log("SISTEMA", "¡Todos los autos ocupados! Inicia la atracción | AUTOS CHOCADORES");
+            Salida.log("SISTEMA", "Todos los autos ocupados Inicia la atraccion | AUTOS CHOCADORES");
         });
     }
     

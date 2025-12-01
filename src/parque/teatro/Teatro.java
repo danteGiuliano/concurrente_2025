@@ -38,9 +38,7 @@ public class Teatro {
     }
 
 
-    // ================================
     //  VISITANTE INTENTA ENTRAR
-    // ================================
     public boolean intentarEntrar(Visitante v) throws InterruptedException {
         lock.lock();
         try {
@@ -86,9 +84,8 @@ public class Teatro {
     }
 
 
-    // ================================
     //  ASISTENTE FORMA GRUPO
-    // ================================
+
     boolean formarGrupo(int idAsistente) throws InterruptedException {
         lock.lock();
         try {
@@ -132,25 +129,21 @@ public class Teatro {
     }
 
 
-    // ================================
-    //     INICIAR ESPECTÁCULO
-    // ================================
+
     private void iniciarEspectaculo(int asistente) throws InterruptedException {
         espectaculoActivo = true;
 
         Salida.log("ASISTENTE-" + asistente, "inicia el espectáculo | TEATRO");
         inicioEspectaculo.signalAll();
 
-              Thread.sleep(10000);
+            Thread.sleep(10000);
                 finalizarEspectaculo(asistente);
 
   
     }
 
 
-    // ================================
-    //     FINALIZAR ESPECTÁCULO
-    // ================================
+
     private void finalizarEspectaculo(int asistente) {
         lock.lock();
         try {

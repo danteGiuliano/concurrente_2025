@@ -39,10 +39,6 @@ public class Mesa {
             // avisamos a quienes esperan en la mesa (por si con esto se completa)
             mesaCompleta.signalAll();
 
-            // **IMPORTANTE**: NO llamar a comedor.notificarLugarDisponible() desde aquí
-            // porque eso intentaría tomar comedor.lock mientras se tiene mesa.lock
-            // → riesgo de inversión de locks / deadlock.
-
             return true;
 
         } finally {
@@ -51,7 +47,7 @@ public class Mesa {
     }
 
     public void esperarYComer(Visitante v) throws InterruptedException {
-        // esperar a que la mesa esté completa (política original)
+        // esperar a que la mesa esté completa 
         lock.lock();
         try {
             while (visitantesSentados < CAPACIDAD) {
@@ -74,7 +70,7 @@ public class Mesa {
             lock.unlock();
         }
 
-        // simulamos comida (fuera del lock de mesa)
+        // simulamos comida 
         Thread.sleep(5000);
 
         boolean debeNotificarComedor = false;
@@ -92,7 +88,7 @@ public class Mesa {
                 Salida.log("SISTEMA",
                         "Mesa N:" + id + " ahora esta libre | COMEDOR");
 
-                // marcamos la necesidad de notificar AL COMEDOR, pero lo haremos fuera del lock
+                // marcamos la necesidad de notificar AL COMEDOR
                 debeNotificarComedor = true;
             }
 
@@ -101,7 +97,7 @@ public class Mesa {
         }
 
         if (debeNotificarComedor) {
-            // llamada fuera del lock de mesa: evita inversión de locks
+            // llamada fuera del lock de mesa
             comedor.notificarLugarDisponible();
         }
     }

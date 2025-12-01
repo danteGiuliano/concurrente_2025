@@ -51,7 +51,7 @@ public class Comedor {
                     }
                 }
 
-                // No hay lugar → espera
+                // No hay lugar  espera
                 Salida.log(v.getIdVisitante(),
                         "no encuentra mesa disponible, espera... | COMEDOR");
 
