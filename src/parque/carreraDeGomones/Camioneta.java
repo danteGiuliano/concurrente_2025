@@ -90,7 +90,7 @@ public class Camioneta extends Thread {
                 "entrega " + solicitud.bolso + " en destino " +
                 "(Viaje N:" + viajesRealizados + ") | CARRERA GOMONES");
             
-            // Notificar que el bolso está disponible
+            
             bolsoListo.signalAll();
             
         } finally {
