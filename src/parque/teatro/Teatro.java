@@ -17,7 +17,7 @@ public class Teatro {
     private final Condition inicioEspectaculo = lock.newCondition();
     private final Condition finEspectaculo = lock.newCondition();
 
-    // Cola de espera REAL
+    // Cola de espera 
     private final Queue<Visitante> colaLobby = new LinkedList<>();
 
     // Visitantes habilitados a avanzar
