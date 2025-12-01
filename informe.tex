@@ -793,8 +793,85 @@ Se emplean hilos tanto para los asistentes como para los visitantes, y se utiliz
 
 
 \newpage
-\section{Realidad Virtual }
+\section{Realidad Virtual}
 
+\subsection{Descripción General}
+La atracción de \textbf{Realidad Virtual (VR)} permite a los visitantes disfrutar de una experiencia inmersiva. Cada visitante necesita un equipo completo compuesto por:
+
+\begin{itemize}
+    \item 1 visor de VR
+    \item 2 manoplas
+    \item 1 base
+\end{itemize}
+
+El sistema gestiona la entrega de componentes mediante un \textbf{Encargado} que distribuye los elementos disponibles y un registro de visitantes que están esperando o utilizando los equipos.
+
+\subsection{Clases Principales}
+\begin{itemize}
+    \item \textbf{RealidadVirtual}: clase principal que coordina la asignación y devolución de equipos, así como la interacción con la ticketera para entregar fichas.
+    \item \textbf{Encargado}: hilo encargado de distribuir los componentes de los equipos a los visitantes en la cola.
+    \item \textbf{EquipoVR}: representa el equipo de VR de un visitante, indicando qué componentes tiene.
+    \item \textbf{Pedido}: objeto que asocia un visitante con su equipo y un \textit{Condition} para esperar a que se complete.
+\end{itemize}
+
+\subsection{Variables y Mecanismos de Sincronización}
+
+\begin{itemize}
+    \item \textbf{visoresDisponibles, manoplasDisponibles, basesDisponibles}: cantidad de componentes disponibles para asignar.
+    \item \textbf{cola}: \textit{Queue} de visitantes esperando su equipo completo.
+    \item \textbf{equiposEnUso}: \textit{Map} de visitantes que ya tienen su equipo asignado.
+    \item \textbf{lock}: \textit{ReentrantLock} para sincronizar acceso a la cola y a los recursos.
+    \item \textbf{visitanteEsperando}: \textit{Condition} para que los visitantes esperen hasta que haya componentes disponibles.
+    \item \textbf{mutexTicketera}: \textit{Semaphore} que asegura que un visitante acceda a la ticketera a la vez.
+\end{itemize}
+
+\subsection{Flujo de Interacción}
+
+El flujo básico de interacción es:
+
+\begin{enumerate}
+    \item El visitante llega a la atracción y se crea un \texttt{Pedido} con su \texttt{EquipoVR}.
+    \item Se agrega el pedido a la \texttt{cola} y se notifica al \texttt{Encargado}.
+    \item El \texttt{Encargado} distribuye los componentes disponibles a los visitantes en orden de llegada:
+    \begin{itemize}
+        \item Primero se entrega el visor si está disponible.
+        \item Luego se entregan las manoplas, hasta completar 2.
+        \item Finalmente se entrega la base si está disponible.
+    \end{itemize}
+    \item Cuando el equipo está completo, el visitante es notificado mediante \texttt{Condition.signal()} y puede iniciar la experiencia VR.
+    \item Tras finalizar, el visitante devuelve el equipo, actualizando los contadores de componentes disponibles y notificando a la cola en espera.
+    \item Posteriormente, obtiene las fichas de la ticketera mediante un \texttt{Exchanger} protegido por un \texttt{Semaphore}.
+\end{enumerate}
+
+\subsection{Diagrama de Flujo de Interacción}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm, auto,>=latex']
+    \node[draw, rectangle, rounded corners, text width=4cm, align=center] (visitante) {Visitante llega y crea Pedido};
+    \node[draw, rectangle, rounded corners, text width=4cm, below=of visitante] (cola) {Se agrega a la cola y espera componentes};
+    \node[draw, rectangle, rounded corners, text width=4cm, right=of cola, xshift=6cm] (encargado) {Encargado revisa la cola y entrega componentes disponibles};
+    \node[draw, rectangle, rounded corners, text width=4cm, below=of cola] (equipoCompleto) {Equipo completo: visitante es notificado};
+    \node[draw, rectangle, rounded corners, text width=4cm, below=of equipoCompleto] (vr) {Visitante realiza experiencia VR};
+    \node[draw, rectangle, rounded corners, text width=4cm, below=of vr] (devolver) {Visitante devuelve equipo y actualiza disponibilidad};
+    \node[draw, rectangle, rounded corners, text width=4cm, below=of devolver] (ticketera) {Visitante obtiene fichas de la ticketera};
+
+    \draw[->] (visitante) -- (cola);
+    \draw[->] (cola.east) -- ++(2.5,0) -- ++(0,1) -- (encargado.west);
+    \draw[->] (encargado.south) -- ++(0,-1) -- (equipoCompleto.east);
+    \draw[->] (equipoCompleto) -- (vr);
+    \draw[->] (vr) -- (devolver);
+    \draw[->] (devolver) -- (ticketera);
+\end{tikzpicture}
+\caption{Flujo de interacción entre visitante y encargado en la atracción de Realidad Virtual}
+\end{figure}
+
+\subsection{Observaciones}
+\begin{itemize}
+    \item Se utiliza un \texttt{Lock} justo para evitar condiciones de carrera al manipular la cola y los contadores de componentes.
+    \item Cada visitante tiene su propio \texttt{Condition} para esperar que su equipo se complete sin bloquear a otros visitantes.
+    \item La ticketera usa un \texttt{Semaphore} y un \texttt{Exchanger} para manejar la actualización de la billetera del visitante de manera segura.
+\end{itemize}
 
 
 

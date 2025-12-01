@@ -43,4 +43,10 @@
 \contentsline {subsubsection}{\numberline {7.3.2}Asistente}{19}{subsubsection.7.3.2}%
 \contentsline {subsection}{\numberline {7.4}Mecanismos de Sincronización Utilizados}{20}{subsection.7.4}%
 \contentsline {subsection}{\numberline {7.5}Estados del Teatro}{20}{subsection.7.5}%
-\contentsline {section}{\numberline {8}Realidad Virtual }{21}{section.8}%
+\contentsline {section}{\numberline {8}Realidad Virtual}{21}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Descripción General}{21}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Clases Principales}{21}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Variables y Mecanismos de Sincronización}{21}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Flujo de Interacción}{22}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Diagrama de Flujo de Interacción}{23}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}Observaciones}{23}{subsection.8.6}%
