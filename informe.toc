@@ -31,4 +31,6 @@
 \contentsline {subsection}{\numberline {6.4}Modelo de Concurrencia y Sincronización}{16}{subsection.6.4}%
 \contentsline {subsection}{\numberline {6.5}Lógica de programa}{16}{subsection.6.5}%
 \contentsline {paragraph}{Método \texttt {AreaPremios.buscarMejorPremio}}{16}{section*.2}%
-\contentsline {section}{\numberline {7}Apéndice y Conclusiones}{17}{section.7}%
+\contentsline {section}{\numberline {7}Comedor }{17}{section.7}%
+\contentsline {section}{\numberline {8}Teatro }{18}{section.8}%
+\contentsline {section}{\numberline {9}Realidad Virtual }{19}{section.9}%

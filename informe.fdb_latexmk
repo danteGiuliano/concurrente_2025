@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1764595511.43596 "c:/Users/Dante/Desktop/concurrente_2025/informe.tex" "informe.pdf" "informe" 1764595512.97497 2
+["pdflatex"] 1764595805.49896 "c:/Users/Dante/Desktop/concurrente_2025/informe.tex" "informe.pdf" "informe" 1764595807.26715 2
   "C:/Users/Dante/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1764558463 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/Dante/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1764559152 31952 fc89775723188ae20d4a309d9489d32b ""
   "C:/Users/Dante/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk" 1764558000 40136 1dccd77699d05f5b51aa3f3b319f94f1 ""
@@ -169,11 +169,11 @@
   "C:/Users/Dante/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "C:/Users/Dante/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Dante/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/Users/Dante/Desktop/concurrente_2025/informe.tex" 1764595508 22698 7e54d1a2563b752d4e70600d3b6077df ""
-  "informe.aux" 1764595512 6166 bc5e2aee431171287d4b8b4e4a715276 "pdflatex"
-  "informe.out" 1764595512 5542 6e0657f689a3888329e9af73d220f5e0 "pdflatex"
-  "informe.tex" 1764595508 22698 7e54d1a2563b752d4e70600d3b6077df ""
-  "informe.toc" 1764595512 2982 97e4976ab3d4453cf7ed68560dbe0e5f "pdflatex"
+  "c:/Users/Dante/Desktop/concurrente_2025/informe.tex" 1764595802 22763 e14c83be148c48821b03141b37d53c2a ""
+  "informe.aux" 1764595806 6370 cc7fd103fbcf6d651153e6201787c294 "pdflatex"
+  "informe.out" 1764595806 5678 7f4c5dd10bc2d65c9786c819cbecaf0d "pdflatex"
+  "informe.tex" 1764595802 22763 e14c83be148c48821b03141b37d53c2a ""
+  "informe.toc" 1764595806 3104 f37e2b3ae02375edad37bfae0a9fff8c "pdflatex"
   (generated)
   "informe.aux"
   "informe.log"

@@ -255,6 +255,9 @@ INPUT C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex\generic\pgf\frontendlayer
 INPUT C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex\generic\pgf\frontendlayer\tikz\libraries\tikzlibrarycalc.code.tex
 INPUT C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
 INPUT C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
+INPUT .\informe.aux
+INPUT .\informe.aux
+INPUT informe.aux
 OUTPUT informe.aux
 INPUT C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
