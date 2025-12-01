@@ -351,7 +351,13 @@ while (Reloj.operativo()) {
 \node[draw, rectangle] (visitante) {Visitante};
 \node[draw, rectangle, right of=visitante] (ticketera) {Ticketera};
 
-\draw[<->] (visitante) -- node[above] {exchange(billetera)} node[below] {exchange(billetera actualizada)} (ticketera);
+\draw[<->] 
+  (visitante) --
+  node[above=6pt] {exchange(billetera)}
+  node[below=6pt] {exchange(billetera actualizada)}
+  (ticketera);
+
+
 \end{tikzpicture}
 \caption{Intercambio sincronizado con Exchanger}
 \end{figure}
@@ -487,7 +493,7 @@ if (carrito.availablePermits() > 0) {
 \centering
 \begin{tikzpicture}[
     node distance=1.5cm,
-    action/.style={rectangle, draw, fill=blue!20, text width=10em, text centered, minimum height=2em}
+    action/.style={rectangle, draw, fill=blue!20, text width=18em, text centered, minimum height=2em}
 ]
 
 \node[action] (1) {1. Llegar al inicio (Bici/Tren)};

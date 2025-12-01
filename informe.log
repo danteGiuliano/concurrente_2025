@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.1)  1 DEC 2025 00:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.1)  1 DEC 2025 00:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -512,7 +512,8 @@ File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (C:\Users\Dante\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count333
-) (informe.aux)
+)
+No file informe.aux.
 \openout1 = `informe.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
@@ -537,7 +538,6 @@ LaTeX Info: Redefining \. on input line 56.
 LaTeX Info: Redefining \% on input line 56.
 Package babel Info: 'spanish' activates 'spanish' shorthands.
 (babel)             Reported on input line 56.
-
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -2258,7 +2258,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Argument of \language@a
 <inserted text> 
                 \par 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 I've run across a `}' that doesn't seem to match anything.
 For example, `\def\a#1{...}' and `\a}' would produce
 this error. If you simply proceed now, the `\par' that
@@ -2271,7 +2271,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Paragraph ended before 
 <to be read again> 
                    \par 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
@@ -2282,7 +2282,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Paragraph ended before 
 <to be read again> 
                    \par 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
@@ -2291,7 +2291,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Missing \endcsname inse
 <to be read again> 
                    \scan_stop: 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 The control sequence marked <to be read again> should
 not appear between \csname and \endcsname.
 
@@ -2299,7 +2299,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Missing \endcsname inse
 <to be read again> 
                    \scan_stop: 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 The control sequence marked <to be read again> should
 not appear between \csname and \endcsname.
 
@@ -2307,7 +2307,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Missing \endcsname inse
 <to be read again> 
                    \scan_stop: 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 The control sequence marked <to be read again> should
 not appear between \csname and \endcsname.
 
@@ -2317,7 +2317,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:354: Paragraph ended before 
 <to be read again> 
                    \par 
 l.354 \draw[<->]
-                 (visitante) -- node[above] {exchange(billetera)} node[below...
+                
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
@@ -2335,16 +2335,16 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.373 \newpage
+l.379 \newpage
               ]
 
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:414: LaTeX Error: Invalid UTF-8 byte sequence (�\lst@FillFixed@).
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:420: LaTeX Error: Invalid UTF-8 byte sequence (�\lst@FillFixed@).
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.414     // No soy el último,
+l.420     // No soy el último,
                                 espero
 The document does not appear to be in UTF-8 encoding.
 Try adding \UseRawInputEncoding as the first line of the file
@@ -2353,13 +2353,13 @@ in the document preamble.
 Alternatively, save the file in UTF-8 using your editor or another tool
 
 
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:414: LaTeX Error: Invalid UTF-8 byte "BA.
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:420: LaTeX Error: Invalid UTF-8 byte "BA.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.414     // No soy el último,
+l.420     // No soy el último,
                                 espero
 The document does not appear to be in UTF-8 encoding.
 Try adding \UseRawInputEncoding as the first line of the file
@@ -2368,13 +2368,13 @@ in the document preamble.
 Alternatively, save the file in UTF-8 using your editor or another tool
 
 
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:417: LaTeX Error: Invalid UTF-8 byte sequence (�\lst@FillFixed@).
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:423: LaTeX Error: Invalid UTF-8 byte sequence (�\lst@FillFixed@).
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.417     // Soy el último,
+l.423     // Soy el último,
                              hago el viaje
 The document does not appear to be in UTF-8 encoding.
 Try adding \UseRawInputEncoding as the first line of the file
@@ -2383,13 +2383,13 @@ in the document preamble.
 Alternatively, save the file in UTF-8 using your editor or another tool
 
 
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:417: LaTeX Error: Invalid UTF-8 byte "BA.
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:423: LaTeX Error: Invalid UTF-8 byte "BA.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.417     // Soy el último,
+l.423     // Soy el último,
                              hago el viaje
 The document does not appear to be in UTF-8 encoding.
 Try adding \UseRawInputEncoding as the first line of the file
@@ -2398,13 +2398,13 @@ in the document preamble.
 Alternatively, save the file in UTF-8 using your editor or another tool
 
 
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:419: LaTeX Error: Invalid UTF-8 byte sequence (�\expandafter).
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:425: LaTeX Error: Invalid UTF-8 byte sequence (�\expandafter).
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.419     // Despierto a los demás
+l.425     // Despierto a los demás
                                    
 The document does not appear to be in UTF-8 encoding.
 Try adding \UseRawInputEncoding as the first line of the file
@@ -2413,13 +2413,13 @@ in the document preamble.
 Alternatively, save the file in UTF-8 using your editor or another tool
 
 
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:419: LaTeX Error: Invalid UTF-8 byte "A1.
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:425: LaTeX Error: Invalid UTF-8 byte "A1.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.419     // Despierto a los demás
+l.425     // Despierto a los demás
                                    
 The document does not appear to be in UTF-8 encoding.
 Try adding \UseRawInputEncoding as the first line of the file
@@ -2438,7 +2438,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.446 \newpage
+l.452 \newpage
               ]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2448,431 +2448,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [12]
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Argument of \language@active@arg> has an extra }.
-<inserted text> 
-                \par 
-l.472 \draw[->]
-                (carrera) -- (bici);
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Paragraph ended before \language@active@arg> was complete.
-<to be read again> 
-                   \par 
-l.472 \draw[->]
-                (carrera) -- (bici);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Paragraph ended before \pgfkeys@addpath was complete.
-<to be read again> 
-                   \par 
-l.472 \draw[->]
-                (carrera) -- (bici);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.472 \draw[->]
-                (carrera) -- (bici);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.472 \draw[->]
-                (carrera) -- (bici);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.472 \draw[->]
-                (carrera) -- (bici);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:472: Paragraph ended before \pgfkeys@splitter was complete.
-<to be read again> 
-                   \par 
-l.472 \draw[->]
-                (carrera) -- (bici);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Missing character: There is no / in font nullfont!
-Missing character: There is no / in font nullfont!
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Argument of \language@active@arg> has an extra }.
-<inserted text> 
-                \par 
-l.473 \draw[->]
-                (carrera) -- (tren);
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Paragraph ended before \language@active@arg> was complete.
-<to be read again> 
-                   \par 
-l.473 \draw[->]
-                (carrera) -- (tren);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Paragraph ended before \pgfkeys@addpath was complete.
-<to be read again> 
-                   \par 
-l.473 \draw[->]
-                (carrera) -- (tren);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.473 \draw[->]
-                (carrera) -- (tren);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.473 \draw[->]
-                (carrera) -- (tren);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.473 \draw[->]
-                (carrera) -- (tren);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:473: Paragraph ended before \pgfkeys@splitter was complete.
-<to be read again> 
-                   \par 
-l.473 \draw[->]
-                (carrera) -- (tren);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Missing character: There is no / in font nullfont!
-Missing character: There is no / in font nullfont!
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Argument of \language@active@arg> has an extra }.
-<inserted text> 
-                \par 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Paragraph ended before \language@active@arg> was complete.
-<to be read again> 
-                   \par 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Paragraph ended before \pgfkeys@addpath was complete.
-<to be read again> 
-                   \par 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:474: Paragraph ended before \pgfkeys@splitter was complete.
-<to be read again> 
-                   \par 
-l.474 \draw[->]
-                (carrera) -- (gomones);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Missing character: There is no / in font nullfont!
-Missing character: There is no / in font nullfont!
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Argument of \language@active@arg> has an extra }.
-<inserted text> 
-                \par 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Paragraph ended before \language@active@arg> was complete.
-<to be read again> 
-                   \par 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Paragraph ended before \pgfkeys@addpath was complete.
-<to be read again> 
-                   \par 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:475: Paragraph ended before \pgfkeys@splitter was complete.
-<to be read again> 
-                   \par 
-l.475 \draw[->]
-                (carrera) -- (bolsos);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Missing character: There is no / in font nullfont!
-Missing character: There is no / in font nullfont!
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Argument of \language@active@arg> has an extra }.
-<inserted text> 
-                \par 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Paragraph ended before \language@active@arg> was complete.
-<to be read again> 
-                   \par 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Paragraph ended before \pgfkeys@addpath was complete.
-<to be read again> 
-                   \par 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:476: Paragraph ended before \pgfkeys@splitter was complete.
-<to be read again> 
-                   \par 
-l.476 \draw[->]
-                (carrera) -- (camioneta);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Missing character: There is no / in font nullfont!
-Missing character: There is no / in font nullfont!
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Argument of \language@active@arg> has an extra }.
-<inserted text> 
-                \par 
-l.477 \draw[->]
-                (carrera) -- (control);
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Paragraph ended before \language@active@arg> was complete.
-<to be read again> 
-                   \par 
-l.477 \draw[->]
-                (carrera) -- (control);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Paragraph ended before \pgfkeys@addpath was complete.
-<to be read again> 
-                   \par 
-l.477 \draw[->]
-                (carrera) -- (control);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.477 \draw[->]
-                (carrera) -- (control);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.477 \draw[->]
-                (carrera) -- (control);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Missing \endcsname inserted.
-<to be read again> 
-                   \scan_stop: 
-l.477 \draw[->]
-                (carrera) -- (control);
-The control sequence marked <to be read again> should
-not appear between \csname and \endcsname.
-
-Runaway argument?
--
-c:/Users/Dante/Desktop/concurrente_2025/informe.tex:477: Paragraph ended before \pgfkeys@splitter was complete.
-<to be read again> 
-                   \par 
-l.477 \draw[->]
-                (carrera) -- (control);
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-Missing character: There is no / in font nullfont!
-Missing character: There is no / in font nullfont!
 c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Argument of \language@active@arg> has an extra }.
 <inserted text> 
                 \par 
 l.478 \draw[->]
-                (carrera) -- (premios);
+                (carrera) -- (bici);
 I've run across a `}' that doesn't seem to match anything.
 For example, `\def\a#1{...}' and `\a}' would produce
 this error. If you simply proceed now, the `\par' that
@@ -2885,7 +2465,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Paragraph ended before 
 <to be read again> 
                    \par 
 l.478 \draw[->]
-                (carrera) -- (premios);
+                (carrera) -- (bici);
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
@@ -2896,7 +2476,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Paragraph ended before 
 <to be read again> 
                    \par 
 l.478 \draw[->]
-                (carrera) -- (premios);
+                (carrera) -- (bici);
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
@@ -2905,7 +2485,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Missing \endcsname inse
 <to be read again> 
                    \scan_stop: 
 l.478 \draw[->]
-                (carrera) -- (premios);
+                (carrera) -- (bici);
 The control sequence marked <to be read again> should
 not appear between \csname and \endcsname.
 
@@ -2913,7 +2493,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Missing \endcsname inse
 <to be read again> 
                    \scan_stop: 
 l.478 \draw[->]
-                (carrera) -- (premios);
+                (carrera) -- (bici);
 The control sequence marked <to be read again> should
 not appear between \csname and \endcsname.
 
@@ -2921,7 +2501,7 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Missing \endcsname inse
 <to be read again> 
                    \scan_stop: 
 l.478 \draw[->]
-                (carrera) -- (premios);
+                (carrera) -- (bici);
 The control sequence marked <to be read again> should
 not appear between \csname and \endcsname.
 
@@ -2931,6 +2511,426 @@ c:/Users/Dante/Desktop/concurrente_2025/informe.tex:478: Paragraph ended before 
 <to be read again> 
                    \par 
 l.478 \draw[->]
+                (carrera) -- (bici);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no / in font nullfont!
+Missing character: There is no / in font nullfont!
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Argument of \language@active@arg> has an extra }.
+<inserted text> 
+                \par 
+l.479 \draw[->]
+                (carrera) -- (tren);
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Paragraph ended before \language@active@arg> was complete.
+<to be read again> 
+                   \par 
+l.479 \draw[->]
+                (carrera) -- (tren);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Paragraph ended before \pgfkeys@addpath was complete.
+<to be read again> 
+                   \par 
+l.479 \draw[->]
+                (carrera) -- (tren);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.479 \draw[->]
+                (carrera) -- (tren);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.479 \draw[->]
+                (carrera) -- (tren);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.479 \draw[->]
+                (carrera) -- (tren);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:479: Paragraph ended before \pgfkeys@splitter was complete.
+<to be read again> 
+                   \par 
+l.479 \draw[->]
+                (carrera) -- (tren);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no / in font nullfont!
+Missing character: There is no / in font nullfont!
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Argument of \language@active@arg> has an extra }.
+<inserted text> 
+                \par 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Paragraph ended before \language@active@arg> was complete.
+<to be read again> 
+                   \par 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Paragraph ended before \pgfkeys@addpath was complete.
+<to be read again> 
+                   \par 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:480: Paragraph ended before \pgfkeys@splitter was complete.
+<to be read again> 
+                   \par 
+l.480 \draw[->]
+                (carrera) -- (gomones);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no / in font nullfont!
+Missing character: There is no / in font nullfont!
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Argument of \language@active@arg> has an extra }.
+<inserted text> 
+                \par 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Paragraph ended before \language@active@arg> was complete.
+<to be read again> 
+                   \par 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Paragraph ended before \pgfkeys@addpath was complete.
+<to be read again> 
+                   \par 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:481: Paragraph ended before \pgfkeys@splitter was complete.
+<to be read again> 
+                   \par 
+l.481 \draw[->]
+                (carrera) -- (bolsos);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no / in font nullfont!
+Missing character: There is no / in font nullfont!
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Argument of \language@active@arg> has an extra }.
+<inserted text> 
+                \par 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Paragraph ended before \language@active@arg> was complete.
+<to be read again> 
+                   \par 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Paragraph ended before \pgfkeys@addpath was complete.
+<to be read again> 
+                   \par 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:482: Paragraph ended before \pgfkeys@splitter was complete.
+<to be read again> 
+                   \par 
+l.482 \draw[->]
+                (carrera) -- (camioneta);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no / in font nullfont!
+Missing character: There is no / in font nullfont!
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Argument of \language@active@arg> has an extra }.
+<inserted text> 
+                \par 
+l.483 \draw[->]
+                (carrera) -- (control);
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Paragraph ended before \language@active@arg> was complete.
+<to be read again> 
+                   \par 
+l.483 \draw[->]
+                (carrera) -- (control);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Paragraph ended before \pgfkeys@addpath was complete.
+<to be read again> 
+                   \par 
+l.483 \draw[->]
+                (carrera) -- (control);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.483 \draw[->]
+                (carrera) -- (control);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.483 \draw[->]
+                (carrera) -- (control);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.483 \draw[->]
+                (carrera) -- (control);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:483: Paragraph ended before \pgfkeys@splitter was complete.
+<to be read again> 
+                   \par 
+l.483 \draw[->]
+                (carrera) -- (control);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no / in font nullfont!
+Missing character: There is no / in font nullfont!
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Argument of \language@active@arg> has an extra }.
+<inserted text> 
+                \par 
+l.484 \draw[->]
+                (carrera) -- (premios);
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Paragraph ended before \language@active@arg> was complete.
+<to be read again> 
+                   \par 
+l.484 \draw[->]
+                (carrera) -- (premios);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Paragraph ended before \pgfkeys@addpath was complete.
+<to be read again> 
+                   \par 
+l.484 \draw[->]
+                (carrera) -- (premios);
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.484 \draw[->]
+                (carrera) -- (premios);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.484 \draw[->]
+                (carrera) -- (premios);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Missing \endcsname inserted.
+<to be read again> 
+                   \scan_stop: 
+l.484 \draw[->]
+                (carrera) -- (premios);
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+Runaway argument?
+-
+c:/Users/Dante/Desktop/concurrente_2025/informe.tex:484: Paragraph ended before \pgfkeys@splitter was complete.
+<to be read again> 
+                   \par 
+l.484 \draw[->]
                 (carrera) -- (premios);
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
@@ -2939,7 +2939,7 @@ My plan is to forget the whole thing and hope for the best.
 Missing character: There is no / in font nullfont!
 Missing character: There is no / in font nullfont!
 
-Overfull \hbox (22.09525pt too wide) in paragraph at lines 480--481
+Overfull \hbox (22.09525pt too wide) in paragraph at lines 486--487
  [][] 
  []
 
@@ -2954,7 +2954,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.507 
+l.513 
       ]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2967,7 +2967,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.508 \end{document}
+l.514 \end{document}
                     ] (informe.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
@@ -2987,15 +2987,15 @@ Package rerunfilecheck Info: Checksums for `informe.out':
 (rerunfilecheck)             After:  9FE54FF4B40DE995411EE6B285A7C134;4014.
  ) 
 Here is how much of TeX's memory you used:
- 26364 strings out of 467871
- 509049 string characters out of 5418376
- 1208559 words of memory out of 5000000
- 54761 multiletter control sequences out of 15000+600000
+ 26361 strings out of 467871
+ 508963 string characters out of 5418376
+ 1208568 words of memory out of 5000000
+ 54760 multiletter control sequences out of 15000+600000
  639703 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,11n,104p,449b,1223s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0600.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\Dante\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk>
-Output written on informe.pdf (14 pages, 169759 bytes).
+Output written on informe.pdf (14 pages, 169682 bytes).
 PDF statistics:
  565 PDF objects out of 1000 (max. 8388607)
  88 named destinations out of 1000 (max. 500000)
