@@ -63,39 +63,35 @@ public class Parque {
 
         while (Reloj.operativo()) {
 
-            if (this.rng(20)) {
+            if (this.rng(20)&&Reloj.operativo()) {
                 this.montaniaRusa(v);
 
             }
 
-            if (this.rng(20)) {
+            if (this.rng(20)&&Reloj.operativo()) {
                 this.autitosChocadores(v);
-
             }
 
-            if (this.rng(20)) {
+            if (this.rng(20)&&Reloj.operativo()) {
                 this.comedor(v);
             }
 
-            if (this.rng(20)) {
+            if (this.rng(20)&&Reloj.operativo()) {
                 this.teatro(v);
             }
 
-            if (this.rng(20)) {
+            if (this.rng(20)&&Reloj.operativo()) {
                 this.realidadVirtual(v);
             }
 
-            if (this.rng(10) && v.getBilletera().getFichas() > 0) {
+            if (this.rng(10) && v.getBilletera().getFichas() > 0 &&Reloj.operativo()) {
                 this.areaPremios(v);
             }
 
-            if (this.rng(25)) {
+            if (this.rng(25)&&Reloj.operativo()) {
                 this.carreraGomones(v);
             }
         }
-
-    
-
         Salida.log(v.getIdVisitante(), "parque cerrado se va a casa | PARQUE ");
     }
 

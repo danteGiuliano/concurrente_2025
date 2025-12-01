@@ -168,7 +168,7 @@ public class RealidadVirtual {
         }
     }
 
-    /** Simulación */
+    
     public void realizarActividadVR(Visitante v) throws InterruptedException {
         Salida.log(v.getIdVisitante(),
                 "ingresa a la experiencia VR | REALIDAD VIRTUAL");

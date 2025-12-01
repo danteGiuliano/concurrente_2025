@@ -1,7 +1,5 @@
 package parque;
 
-import java.math.BigInteger;
-
 import util.Salida;
 
 /**
