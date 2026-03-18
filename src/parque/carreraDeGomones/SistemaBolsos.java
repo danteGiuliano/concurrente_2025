@@ -41,9 +41,6 @@ public class SistemaBolsos {
         Salida.log(v.getIdVisitante(), 
             "recibe " + bolso + " con llave | CARRERA GOMONES");
         
-        // Simular guardar pertenencias
-        Thread.sleep(1000);
-        
         return bolso;
     }
     

@@ -32,6 +32,8 @@ public class Comedor {
                 "se dirige a la mesa N:" + mesa.getId() + " | COMEDOR");
 
         mesa.esperarYComer(v);
+        
+        Thread.sleep(5000);
 
         return true;
     }

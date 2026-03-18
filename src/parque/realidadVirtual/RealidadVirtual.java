@@ -171,9 +171,7 @@ public class RealidadVirtual {
     
     public void realizarActividadVR(Visitante v) throws InterruptedException {
         Salida.log(v.getIdVisitante(),
-                "ingresa a la experiencia VR | REALIDAD VIRTUAL");
-
-        Thread.sleep(6000);
+                "ingreso a la experiencia VR | REALIDAD VIRTUAL");
 
         Salida.log(v.getIdVisitante(),
                 "finaliza la experiencia VR | REALIDAD VIRTUAL");

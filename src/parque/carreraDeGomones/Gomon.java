@@ -40,8 +40,10 @@ public class Gomon {
         return enUso;
     }
     
-    public void marcarEnUso() {
+    public boolean markEnUso() {
+        if (enUso) return false;
         this.enUso = true;
+        return true;
     }
     
     public void marcarDisponible() {

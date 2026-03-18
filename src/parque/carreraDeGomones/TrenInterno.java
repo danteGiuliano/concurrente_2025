@@ -53,7 +53,6 @@ public class TrenInterno {
 
             if (!added) {
                 // esperamos fuera del mutex para no bloquear a transportar()
-                Thread.sleep(10);
             }
         }
 

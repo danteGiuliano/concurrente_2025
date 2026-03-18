@@ -61,6 +61,7 @@
 \tableofcontents
 \newpage
 
+\section{Introducción}
 
 \subsection{Objetivos del Sistema}
 \begin{itemize}
@@ -141,11 +142,9 @@ El sistema implementa una \textbf{arquitectura basada en componentes} con los si
     \item \textbf{Patrón Productor-Consumidor:} Utilizado en múltiples atracciones.
     \item \textbf{Patrón Coordinador:} El Parque actúa como coordinador central.
 \end{itemize}
-
 \newpage
 
 \section{Componentes Principales}
-
 \subsection{Main y Simulación}
 
 \subsubsection{Main.java}
@@ -204,7 +203,6 @@ El sistema implementa una \textbf{arquitectura basada en componentes} con los si
 private static final AtomicLong idGenerator = new AtomicLong(0);
 long uniqueId = idGenerator.incrementAndGet();
 \end{lstlisting}
-
 \newpage
 
 \subsection{Sistema de Control Temporal}
@@ -372,7 +370,6 @@ while (Reloj.operativo()) {
     \item \texttt{suma}: true = entregar fichas, false = descontar.
     \item \texttt{monto}: cantidad fija (-1 para usar \texttt{valorFicha()}).
 \end{itemize}
-
 \newpage
 
 \section{Atracciones Mecánicas}
@@ -873,7 +870,85 @@ El flujo básico de interacción es:
     \item La ticketera usa un \texttt{Semaphore} y un \texttt{Exchanger} para manejar la actualización de la billetera del visitante de manera segura.
 \end{itemize}
 
+\newpage
 
+\section{Estrategias de Prevención de Problemas de Concurrencia}
+
+\subsection{Deadlock}
+
+El deadlock ocurre cuando dos o más hilos quedan esperando indefinidamente por recursos que el otro tiene. Para evitarlo, el sistema implementa las siguientes estrategias:
+
+\begin{itemize}
+    \item \textbf{Orden estricto de adquisición de locks}: En el Comedor, nunca se adquiere el lock del Comedor desde dentro del lock de una Mesa. La notificación al Comedor se hace fuera del bloqueo de la mesa.
+    \item \textbf{Timeouts en bloqueos}: Los Semaphore con \texttt{tryAcquire()} permiten abandonar colas de espera saturadas (ej: Montaña Rusa con cola llena).
+    \item \textbf{Un solo punto de sincronización por operación}: Cada atracción maneja su propia lógica de sincronización de forma independiente.
+\end{itemize}
+
+\subsection{Inanición (Starvation)}
+
+La inanición ocurre cuando un hilo nunca obtiene acceso a un recurso compartido. El sistema la previene mediante:
+
+\begin{itemize}
+    \item \textbf{Fairness en Semáforos}: Todos los \texttt{Semaphore} se crean con \texttt{fair = true}, garantizando que los hilos esperen en orden FIFO.
+    \item \textbf{Exhaustividad de recursos}: Las colas de espera tienen límites; cuando están llenas, el visitante puede ir a otra atracción en lugar de esperar indefinidamente.
+    \item \textbf{CyclicBarrier}: Garantiza que todos los participantes de un grupo avancen juntos.
+\end{itemize}
+
+\subsection{Livelock}
+
+El livelock ocurre cuando los hilos están constantemente cambiando de estado pero no progresan. Se evita mediante:
+
+\begin{itemize}
+    \item \textbf{Condiciones de espera específicas}: Cada visitante espera en su propia \texttt{Condition}, no en un estado compartido activo.
+    \item \textbf{No retoma automática de operaciones fallidas}: Si una operación no puede completarse, el hilo sale y puede reintentar más tarde.
+\end{itemize}
+
+\newpage
+
+\section{Tabla Resumen de Mecanismos de Sincronización}
+
+\begin{table}[H]
+    \centering
+    \caption{Mecanismos utilizados por atracción}
+    \begin{tabular}{|l|p{3.5cm}|p{5cm}|}
+        \hline
+        \textbf{Atracción} & \textbf{Mecanismo Principal} & \textbf{Propósito} \\
+        \hline
+        Molinetes & Semaphore(1, fair) & Exclusión mutua en el ingreso \\
+        \hline
+        Montaña Rusa & BlockingQueue + Semaphore & Cola de espera y control de capacidad del carrito \\
+        \hline
+        Autitos Chocadores & CyclicBarrier & Sincronizar inicio cuando todos los autos están llenos \\
+        \hline
+        Realidad Virtual & ReentrantLock + Condition & Asignación de componentes por visitante \\
+        \hline
+        Carrera de Gomones & Exchanger + Semaphore & Intercambio de bolsos y control de largada \\
+        \hline
+        Área de Premios & ReentrantLock + Condition & Productor-Consumidor con señal individual \\
+        \hline
+        Comedor & ReentrantLock + Condition & Espera hasta mesa completa (4 personas) \\
+        \hline
+        Teatro & ReentrantLock + Condition & Formación de grupos de 5 personas \\
+        \hline
+        Ticketera & Exchanger + Semaphore & Intercambio thread-safe de fichas \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Conclusiones}
+
+El sistema de parque de diversiones implementado demuestra el uso efectivo de múltiples mecanismos de sincronización de Java para resolver problemas de concurrencia reales. Cada atracción presenta desafíos únicos que requieren soluciones específicas:
+
+\begin{itemize}
+    \item \textbf{Montaña Rusa}: Manejo de colas con capacidad limitada y sincronización de grupos.
+    \item \textbf{Autitos Chocadores}: Coordinación exacta de 20 personas para iniciar la atracción.
+    \item \textbf{Realidad Virtual}: Gestión de recursos limitados (componentes) con espera individual.
+    \item \textbf{Carrera de Gomones}: Flujo multi-etapa con coordinación de múltiples recursos.
+    \item \textbf{Comedor}: Sincronización de inicio colectivo (todos comen juntos).
+    \item \textbf{Teatro}: Formación de grupos y coordinación de espectáculo.
+\end{itemize}
+
+La combinación de Semaphores, Locks, Conditions, CyclicBarriers y Exchangers permite un sistema robusto que evita deadlocks, inanición y livelocks, garantizando que todos los visitantes puedan disfrutar de las atracciones de manera segura y justa.
 
 \end{document}
 

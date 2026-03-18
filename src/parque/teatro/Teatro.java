@@ -136,10 +136,15 @@ public class Teatro {
         Salida.log("ASISTENTE-" + asistente, "inicia el espectáculo | TEATRO");
         inicioEspectaculo.signalAll();
 
-            Thread.sleep(10000);
+        Thread espectaculo = new Thread(() -> {
+            try {
+                Thread.sleep(10000);
                 finalizarEspectaculo(asistente);
-
-  
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        espectaculo.start();
     }
 
 

@@ -1,2 +1,4 @@
 .class 
 simulacion.log
+.agents/
+skills-lock.json

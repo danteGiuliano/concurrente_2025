@@ -36,8 +36,6 @@ public class StandBicicletas {
                 "toma bicicleta (" + disponibles + "/" + CANTIDAD_TOTAL + 
                 " restantes) | CARRERA GOMONES");
             
-            Thread.sleep(2000);
-            
             Salida.log(v.getIdVisitante(), 
                 "llega al inicio en bicicleta | CARRERA GOMONES");
             

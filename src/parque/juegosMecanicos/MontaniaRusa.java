@@ -68,7 +68,6 @@ public class MontaniaRusa {
         } else {
             // soy el último que llenó el carrito -> hago el viaje
             Salida.log(v.getIdVisitante(), "comienza el viaje | MONTANIA RUSA");
-            Thread.sleep(5000);
             Salida.log(v.getIdVisitante(), "termina el viaje | MONTANIA RUSA");
             // despierto a los otros pasajeros para que bajen
             this.barrier.release(CAPACIDAD_VIAJE - 1);

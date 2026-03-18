@@ -49,35 +49,24 @@ public class SistemaGomones {
      * Prioridad: individual primero, luego doble
      */
     public Gomon obtenerGomon(Visitante v) {
-        // Intentar gomón individual primero
+        Gomon gomon = null;
+        
         if (semaforoIndividuales.tryAcquire()) {
-            Gomon gomon = buscarGomonDisponible(gomonesIndividuales);
-            gomon.marcarEnUso();
-            
-            Salida.log(v.getIdVisitante(), 
-                "obtiene " + gomon + " | CARRERA GOMONES");
-            return gomon;
+            gomon = buscarYMarcarGomon(gomonesIndividuales);
+        } else if (semaforoDobles.tryAcquire()) {
+            gomon = buscarYMarcarGomon(gomonesDobles);
         }
         
-        // Si no hay individual, intentar doble
-        if (semaforoDobles.tryAcquire()) {
-            Gomon gomon = buscarGomonDisponible(gomonesDobles);
-            gomon.marcarEnUso();
-            
+        if (gomon != null) {
             Salida.log(v.getIdVisitante(), 
                 "obtiene " + gomon + " | CARRERA GOMONES");
-            return gomon;
+        } else {
+            Salida.log(v.getIdVisitante(), 
+                "no hay gomones disponibles | CARRERA GOMONES");
         }
-        
-        // No hay gomones disponibles
-        Salida.log(v.getIdVisitante(), 
-            "no hay gomones disponibles | CARRERA GOMONES");
-        return null;
+        return gomon;
     }
     
-    /**
-     * Devuelve gomón al sistema
-     */
     public void devolverGomon(Gomon gomon, Visitante v) {
         gomon.marcarDisponible();
         
@@ -89,6 +78,18 @@ public class SistemaGomones {
         
         Salida.log(v.getIdVisitante(), 
             "devuelve " + gomon + " | CARRERA GOMONES");
+    }
+    
+    /**
+     * Busca y marca el gomón de forma atómica
+     */
+    private synchronized Gomon buscarYMarcarGomon(List<Gomon> lista) {
+        for (Gomon g : lista) {
+            if (g.markEnUso()) {
+                return g;
+            }
+        }
+        return null;
     }
     
     /**

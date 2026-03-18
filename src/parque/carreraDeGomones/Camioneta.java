@@ -13,15 +13,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Camioneta extends Thread {
     
-    // Solicitudes de transporte pendientes
     private final BlockingQueue<SolicitudTransporte> colaSolicitudes;
-    
-    // Bolsos que ya llegaron al destino
     private final Map<Bolso, Visitante> bolsosEnDestino;
-   
     private final Lock lock;
     private final Condition bolsoListo;
-    
     private boolean operativa;
     private int viajesRealizados;
     
@@ -41,21 +36,23 @@ public class Camioneta extends Thread {
         
         while (operativa) {
             try {
-                // Esperar solicitud de transporte
+                // Esperar solicitud de transporte de bolso
                 SolicitudTransporte solicitud = colaSolicitudes.take();
                 
                 Salida.log("CAMIONETA", 
                     "recoge " + solicitud.bolso + " de visitante " + 
                     solicitud.visitante.getIdVisitante() + " | CARRERA GOMONES");
                 
-                // Marcar bolso en transporte
+                // Marcar bolso en transporte hacia el final del recorrido
                 solicitud.bolso.setEstado(Bolso.Estado.EN_TRANSPORTE);
                 
+                // Simular tiempo de transporte
                 Thread.sleep(2000);
                 
-                // Entregar bolso al destino
+                // Entregar bolso en el destino (final del recorrido)
                 entregarBolsoEnDestino(solicitud);
                 
+                // Tiempo de retorno de la camioneta
                 Thread.sleep(1000);
                 
             } catch (InterruptedException e) {
@@ -67,7 +64,6 @@ public class Camioneta extends Thread {
         Salida.log("CAMIONETA", "finaliza operaciones | CARRERA GOMONES");
     }
     
-  
     public void transportarBolso(Bolso bolso, Visitante v) throws InterruptedException {
         SolicitudTransporte solicitud = new SolicitudTransporte(bolso, v);
         colaSolicitudes.put(solicitud);
@@ -76,9 +72,6 @@ public class Camioneta extends Thread {
             "entrega " + bolso + " a la camioneta | CARRERA GOMONES");
     }
     
-    /**
-     * Camioeta entrega el bolso enn el destino
-     */
     private void entregarBolsoEnDestino(SolicitudTransporte solicitud) {
         lock.lock();
         try {
@@ -90,7 +83,6 @@ public class Camioneta extends Thread {
                 "entrega " + solicitud.bolso + " en destino " +
                 "(Viaje N:" + viajesRealizados + ") | CARRERA GOMONES");
             
-            
             bolsoListo.signalAll();
             
         } finally {
@@ -101,7 +93,6 @@ public class Camioneta extends Thread {
     public void retirarBolso(Bolso bolso, Visitante v) throws InterruptedException {
         lock.lock();
         try {
-            // Esperar hasta que el bolso esté en destino
             while (!bolsosEnDestino.containsKey(bolso)) {
                 Salida.log(v.getIdVisitante(), 
                     "espera que llegue " + bolso + " | CARRERA GOMONES");
@@ -109,23 +100,16 @@ public class Camioneta extends Thread {
                 bolsoListo.await();
             }
             
-            // Retirar el bolso
             bolsosEnDestino.remove(bolso);
             
             Salida.log(v.getIdVisitante(), 
                 "retira " + bolso + " y recupera pertenencias | CARRERA GOMONES");
-            
-            // Simular sacar pertenencias
-            Thread.sleep(500);
             
         } finally {
             lock.unlock();
         }
     }
     
- 
-    
-  
     private static class SolicitudTransporte {
          Bolso bolso;
          Visitante visitante;

@@ -108,6 +108,7 @@ public class Parque {
         try {
             if (this.montaniaRusa.intentarEntrar(v)) {
                 this.montaniaRusa.iniciarViaje(v);
+                Thread.sleep(5000);
                 this.montaniaRusa.obtenerFichas(v);
             }
         } catch (Exception e) {
@@ -119,6 +120,7 @@ public class Parque {
         try {
             if (this.autitosChocadores.intentarEntrar(v)) {
                 this.autitosChocadores.esperarInicioYJugar(v);
+                Thread.sleep(5000);
                 this.autitosChocadores.obtenerFichas(v);
             }
         } catch (Exception e) {
@@ -154,9 +156,15 @@ public class Parque {
         try {
             if (this.realidadVirtual.participar(v)) {
                 this.realidadVirtual.realizarActividadVR(v);
+                Thread.sleep(6000);
                 this.realidadVirtual.devolverEquipo(v);
                 this.realidadVirtual.obtenerFichas(v);
             }
+
+        } catch (Exception e) {
+            Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | REALIDAD VIRTUAL ");
+        }
+    }
 
         } catch (Exception e) {
             Salida.log(v.getIdVisitante(), "interrumpido en el parque EXCEPCION | REALIDAD VIRTUAL");

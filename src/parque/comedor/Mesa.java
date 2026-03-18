@@ -70,9 +70,6 @@ public class Mesa {
             lock.unlock();
         }
 
-        // simulamos comida 
-        Thread.sleep(5000);
-
         boolean debeNotificarComedor = false;
 
         lock.lock();

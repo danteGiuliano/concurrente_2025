@@ -33,9 +33,7 @@ public class ControlLargada {
             "Control de Largada: " + GOMONES_NECESARIOS + " gomones por carrera | CARRERA GOMONES");
     }
     
-    /**
-     * Visitante espera hasta que se complete el grupo de largada
-     */
+    // El visitante se registra y espera hasta que haya G gomones listos
     public void esperarLargada(Visitante v, Gomon gomon) throws InterruptedException {
         lock.lock();
         try {
@@ -45,14 +43,9 @@ public class ControlLargada {
                 "listo en linea de largada (" + gomonesListos + "/" + 
                 GOMONES_NECESARIOS + ") | CARRERA GOMONES");
             
-            // Esperar hasta completar G gomones
-            while (gomonesListos < GOMONES_NECESARIOS) {
+            // Esperar a que se complete el grupo de G gomones y se inicie la carrera
+            while (gomonesListos < GOMONES_NECESARIOS || !carreraEnCurso) {
                 esperandoInicio.await();
-            }
-            
-            // Si soy el último en llegar, inicio la carrera
-            if (!carreraEnCurso) {
-                iniciarCarrera();
             }
             
         } finally {
@@ -60,33 +53,43 @@ public class ControlLargada {
         }
     }
     
-    /**
-     * Inicia la carrera cuando se alcanza G gomones
-     */
-    private void iniciarCarrera() {
-        numeroCarrera++;
-        carreraEnCurso = true;
-        posicionLlegada.set(0);
-        
-        Salida.log("SISTEMA CONTROL DE LARGADA", "INICIA CARRERA | CARRERA GOMONES");
-        
-        // Despertar a todos los participantes
-        esperandoInicio.signalAll();
-        
-        // Resetear para próxima carrera
-        gomonesListos = 0;
+    // Cuando se alcanza G gomones, se inicia la carrera
+    public synchronized void iniciarCarrera() {
+        lock.lock();
+        try {
+            numeroCarrera++;
+            carreraEnCurso = true;
+            posicionLlegada.set(0);
+            
+            Salida.log("SISTEMA CONTROL DE LARGADA", "INICIA CARRERA | CARRERA GOMONES");
+            
+            gomonesListos = 0;
+            // Despertar a todos los visitantes que estaban esperando
+            esperandoInicio.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
     
-    /**
-     * Registra la llegada de un visitante
-     * @return posición en la que llegó 
-     */
+    // Verifica si hay suficientes gomones y lanza la carrera
+    public void verificarYLanzarCarrera() {
+        lock.lock();
+        try {
+            if (gomonesListos >= GOMONES_NECESARIOS && !carreraEnCurso) {
+                iniciarCarrera();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    // Registra la llegada y determina posición (el primero en llegar es el ganador)
     public int registrarLlegada(Visitante v) {
         int posicion = posicionLlegada.incrementAndGet();
         
-        // Si es el último en llegar, resetear estado
         lock.lock();
         try {
+            // Si es el último en llegar, la carrera termina
             if (posicion == GOMONES_NECESARIOS) {
                 carreraEnCurso = false;
                 
